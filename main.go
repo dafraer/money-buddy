@@ -298,7 +298,9 @@ func expenseAnalytics(w http.ResponseWriter, r *http.Request) {
 
 func logout(w http.ResponseWriter, r *http.Request) {
 	//Saving user data
-	j, err := json.Marshal(current)
+	session, _ := store.Get(r, "session")
+	username, _ := session.Values["username"]
+	j, err := json.Marshal(username)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
@@ -309,7 +311,6 @@ func logout(w http.ResponseWriter, r *http.Request) {
 	defer file.Close()
 	file.Write(j)
 	//Deleting session
-	session, _ := store.Get(r, "session")
 	delete(session.Values, "username")
 	session.Save(r, w)
 	tmpl, err := template.ParseFiles("templates/logout.html")
