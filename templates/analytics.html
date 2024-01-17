@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main page - Money Buddy</title>
+    <style>
+        body {
+            background-color: white;
+            color: black;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #fbff00; /* Yellow */
+            padding: 10px;
+            text-align: center;
+            position: relative;
+        }
+
+        #logo {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            max-width: 80px;
+            max-height: 80px;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: black;
+            padding: 8px 16px;
+            border-radius: 5px;
+            background-color: #ffffff; /* Dark Yellow */
+        }
+
+        section {
+            padding: 20px;
+            text-align: justify;
+        }
+
+        footer {
+            background-color: #ffffff; 
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <img id="logo" src="1.png" alt="Money Buddy Logo">
+        <h1>Sign in to view this page</h1>
+        <nav>
+            <a href="/goals">Financial Goals</a>
+            <a href="/expenses">Budget Tracking</a>
+            <a href="/analytics">Expense Analytics</a>
+        </nav>
+    </header>
+
+    <section>
+        <h2>Expense Analytics</h2>
+        <p>No info since you are not signed in lil bro.</p>
+        <a href="/login">Sign in</a>
+    </section>
+
+    <footer>
+        <p>Contact us at: kdnuriev@gmail.com</p>
+        <p>&copy; 2024 Money Buddy. All rights reserved.</p>
+    </footer>
+</body>
+
+</html>
