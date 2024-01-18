@@ -2,13 +2,9 @@ package main
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"html/template"
-	"io"
 	"net/http"
-	"os"
-	"time"
 	"unicode"
 
 	"github.com/gorilla/context"
@@ -18,25 +14,28 @@ import (
 )
 
 type User struct {
+	UserId       int
 	Username     string
+	TargetAmount float64
+	TargetDate   string
+	Currency     string
 	Balance      float64
 	Transactions []Transaction
 }
 
 type Transaction struct {
-	Amount   float64
-	Time     time.Time
-	Category string
+	TransactionId int
+	//Storing UserId seems useless, mb delete later
+	//UserId          int
+	TransactionTime string
+	Amount          float64
+	Category        string
 }
 
 var store = sessions.NewCookieStore([]byte("super-secret"))
 var current User
 
 func main() {
-	handleRequest()
-}
-
-func handleRequest() {
 	http.HandleFunc("/main", homePage)
 	http.HandleFunc("/login", login)
 	http.HandleFunc("/register", register)
@@ -86,6 +85,7 @@ func loginAuth(w http.ResponseWriter, r *http.Request) {
 	password := r.FormValue("password")
 	//Check the validity of username and password
 	rows, err := database.Query("SELECT username, password FROM users")
+	defer rows.Close()
 	if err != nil {
 		fmt.Println(err.Error())
 	}
@@ -103,18 +103,21 @@ func loginAuth(w http.ResponseWriter, r *http.Request) {
 	}
 	if correct == true {
 		//Opening current user data
-		file, err := os.Open(fmt.Sprintf("data/%s.json", username))
-		defer file.Close()
+		rows, err := database.Query(fmt.Sprintf("SELECT user_id, username, target_amount, target_date, currency, balance FROM users WHERE username = '%s'", username))
 		if err != nil {
 			fmt.Println(err.Error())
 		}
-		content, err := io.ReadAll(file)
-		if err != nil {
-			fmt.Println(err.Error())
+		for rows.Next() {
+			rows.Scan(&current.UserId, &current.Username, &current.TargetAmount, &current.TargetDate, &current.Currency, &current.Balance)
 		}
-		json.Unmarshal(content, &current)
-		if err != nil {
-			fmt.Println(err.Error())
+		rows, err = database.Query(fmt.Sprintf("SELECT transaction_id, transaction_time, amount, category FROM transactions WHERE user_id = %d", current.UserId))
+		current.Transactions = make([]Transaction, 0)
+		var transaction_id int
+		var transaction_time, category string
+		var amount float64
+		for rows.Next() {
+			rows.Scan(&transaction_id, &transaction_time, &amount, &category)
+			current.Transactions = append(current.Transactions, Transaction{transaction_id, transaction_time, amount, category})
 		}
 		//Creating login session
 		session, err := store.Get(r, "session")
@@ -185,6 +188,7 @@ func registerAuth(w http.ResponseWriter, r *http.Request) {
 	}
 	//Checking if user already exists
 	rows, err := database.Query("SELECT username FROM users")
+	defer rows.Close()
 	if err != nil {
 		fmt.Println(err.Error())
 	}
@@ -226,19 +230,6 @@ func registerAuth(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	//Creating and saving json file for user transactions data
-	newUser := User{}
-	newUser.Username = username
-	j, err := json.Marshal(newUser)
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	file, err := os.Create(fmt.Sprintf("data/%s.json", username))
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	defer file.Close()
-	file.Write(j)
 	tmpl.Execute(w, nil)
 }
 
@@ -298,18 +289,8 @@ func expenseAnalytics(w http.ResponseWriter, r *http.Request) {
 
 func logout(w http.ResponseWriter, r *http.Request) {
 	//Saving user data
+	current.updateUserData()
 	session, _ := store.Get(r, "session")
-	username, _ := session.Values["username"]
-	j, err := json.Marshal(username)
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	file, err := os.Open(fmt.Sprintf("data/%s.json", current.Username))
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	defer file.Close()
-	file.Write(j)
 	//Deleting session
 	delete(session.Values, "username")
 	session.Save(r, w)
@@ -318,4 +299,33 @@ func logout(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err.Error())
 	}
 	tmpl.Execute(w, nil)
+}
+
+func (u *User) updateUserData() {
+	database, err := sql.Open("sqlite3", "./users.db")
+	defer database.Close()
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	database.Query(fmt.Sprintf("UPDATE users SET target_amount = %v, target_date = '%s', balance = %v", u.TargetAmount, u.TargetDate, u.Balance))
+}
+
+func (t *Transaction) Add() {
+	database, err := sql.Open("sqlite3", "./users.db")
+	defer database.Close()
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	current.Transactions = append(current.Transactions, *t)
+	database.Query(fmt.Sprintf("INSERT INTO transactions (transaction_time, amount, category) VALUES('%s', %v, '%s')", t.TransactionTime, t.Amount, t.Category))
+}
+
+func (t *Transaction) Remove() {
+	database, err := sql.Open("sqlite3", "./users.db")
+	defer database.Close()
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	current.Transactions = append(current.Transactions[:t.TransactionId-1], current.Transactions[t.TransactionId:]...)
+	database.Query(fmt.Sprintf("DELETE FROM transactions WHERE transaction_id = %d", t.TransactionId))
 }
