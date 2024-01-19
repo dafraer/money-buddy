@@ -15,7 +15,7 @@
         }
 
         header {
-            background-color: #fbff00; /* Yellow */
+            background-color: #FFE135; /* Yellow */
             padding: 10px;
             text-align: center;
             position: relative;
@@ -60,6 +60,14 @@
             background-color: #ffffff; /* Dark Yellow */
         }
 
+        nav a.bold {
+            font-weight: bold;
+        }
+
+        #homebtn {
+            padding: 8px 49px
+        }
+
         section {
             padding: 20px;
             text-align: justify;
@@ -79,6 +87,7 @@
         <a href="/main"> <h1>Hello, {{.Username}}!</h1> </a>
         <a id="signbtn" href="/logout">Sign Out</a>
         <nav>
+            <a id="homebtn" href="/main" class="bold">Home</a>
             <a href="/goals">Financial Goals</a>
             <a href="/expenses">Budget Tracking</a>
             <a href="/analytics">Expense Analytics</a>

@@ -15,7 +15,7 @@
         }
 
         header {
-            background-color: #fbff00; /* Yellow */
+            background-color: #FFE135; /* Yellow */
             padding: 10px;
             text-align: center;
             position: relative;
@@ -64,9 +64,39 @@
             font-weight: bold;
         }
 
-        section {
+        #homebtn {
+            padding: 8px 49px
+        }
+
+        main {
             padding: 20px;
+            padding-top: 5px;
             text-align: justify;
+        }
+
+        .form-container {
+            text-align: justify;
+        }
+
+        #tglbtn {
+            font-size: 20px;
+            background-color: #FFFFFF;
+            border: 0;
+            border-radius: .5rem;
+            box-sizing: border-box;
+            color: #111827;
+            line-height: 1.25rem;
+            padding: 0px;
+            padding-top: 20px;
+            text-align: left;
+            text-decoration: none #D1D5DB solid;
+            text-decoration-thickness: auto;
+            cursor: pointer;
+        }
+
+        /* test part! */
+        .hidden{
+            display: none;    
         }
 
         footer {
@@ -78,40 +108,53 @@
 </head>
 
 <body>
+
+    <!-- I'll provide another location for js, but now links are not working(-->
+    <script>
+        function toggleVisibility() {
+          var hiddenText = document.getElementById('hiddenText');
+          hiddenText.style.display = (hiddenText.style.display === 'none' || hiddenText.style.display === '') ? 'inline' : 'none';}
+      </script>
+
     <header>
         <a href="/main"> <img id="logo" src="pfp.jpg" alt="Money Buddy Logo"> </a>
         <a href="/main"> <h1>Hello, {{.Username}}!</h1> </a>
         <a id="signbtn" href="/logout">Sign Out</a>
         <nav>
+            <a id="homebtn" href="/main">Home</a>
             <a href="/goals" class="bold">Financial Goals</a>
             <a href="/expenses">Budget Tracking</a>
             <a href="/analytics">Expense Analytics</a>
         </nav>
     </header>
+
+    <main>
         <div class="tracker">
             <h2>Financial Tracker</h2>
             <p>Target Amount: $<span id="targetAmount">{{.PiggyBank.TargetAmount}}</span></p>
             <p>Target Date: <span id="targetDate">{{.PiggyBank.TargetDate}}</span></p>
             <p>Balance: $<span id="balance">{{.PiggyBank.Balance}}</span></p>
         </div>
-        
-        <div class="form-container">
+
+        <button onclick="toggleVisibility()" id="tglbtn"><b>Adjust Settings⌄</b></button>
+        <div class="form-container hidden" id="hiddenText">
+            <h3>Add to Balance</h3>
+                <label for="amount">Amount:</label>
+                <input type="text" id="amount" name="amount">
+
             <h3>Adjust Targets</h3>
             <form id="Form" method="post" action="/goalssave">
                 <label for="newAmount">New Target Amount:</label>
-                <input type="text" id="newAmount" name="newAmount" >
-                
+                <input type="text" id="newAmount" name="newAmount">
                 <label for="newDate">New Target Date:</label>
                 <input type="text" id="newDate" name="newDate" >
                 <p><br>Date has to be in a 01/02 03:04:05PM '06 -0700 format (January 2, 15:04:05, 2006, in time zone seven hours west of GMT)</p>
-            <h3>Add to Balance</h3>
-                <label for="amount">Amount:</label>
-                <input type="text" id="amount" name="amount" > <br> <br>
-                <button type="submit" >Save changes</button>
+                <button type="submit">Save changes</button>
+
             </form>
         </div>
-    <p><br></p>
-    <a href="/logout">Sign out</a>
+    </main>
+
     <footer>
         <p>Contact us at: kdnuriev@gmail.com</p>
         <p>&copy; 2024 Money Buddy. All rights reserved.</p>
