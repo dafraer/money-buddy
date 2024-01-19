@@ -56,12 +56,16 @@
             text-decoration: none;
             color: black;
             padding: 8px 16px;
-            border-radius: 5px;
+            border-radius: 8px;
             background-color: #ffffff; /* Dark Yellow */
         }
 
         nav a.bold {
             font-weight: bold;
+        }
+
+        #homebtn {
+            padding: 8px 49px
         }
 
         section {
@@ -83,6 +87,7 @@
         <a href="/main"> <h1>Hello, {{.}}!</h1> </a>
         <a id="signbtn" href="/logout">Sign Out</a>
         <nav>
+            <a id="homebtn" href="/main">Home</a>
             <a href="/goals">Financial Goals</a>
             <a href="/expenses">Budget Tracking</a>
             <a href="/analytics" class="bold">Expense Analytics</a>

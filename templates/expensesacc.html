@@ -64,7 +64,11 @@
             font-weight: bold;
         }
 
-        section {
+        #homebtn {
+            padding: 8px 49px
+        }
+
+        main {
             padding: 20px;
             text-align: justify;
         }
@@ -83,6 +87,7 @@
         <a href="/main"> <h1>Hello, {{.}}!</h1> </a>
         <a id="signbtn" href="/logout">Sign Out</a>
         <nav>
+            <a id="homebtn" href="/main">Home</a>
             <a href="/goals">Financial Goals</a>
             <a href="/expenses" class="bold">Budget Tracking</a>
             <a href="/analytics">Expense Analytics</a>
