@@ -42,6 +42,8 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            margin-top: 15px;
+            margin-bottom: 10px;
         }
 
         button:hover {
@@ -52,11 +54,11 @@
 
 <body>
     <form method="post" action="/registerauth">
-        <h2>Sign up</h2>
+        <h2>Sign Up</h2>
         <input type="text" name="username" placeholder="Username" required>
         <input type="password" name="password" placeholder="Password" required>
-        <button type="submit">Sign up</button>
-        <p>Already have an account? <a href="/login">Sign in</a></p>
+        <button type="submit">Sign Up</button>
+        <p>Already have an account? <a href="/login">Sign In</a></p>
         <p>A password must be at least 8 characters long.<br> A username must be no longer than 20 characters.<br> Only english letters, numbers and special characters are allowed.</p>
         <p style="color: red;">{{.}}</p>
     </form>
