@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"strconv"
+	"time"
 	"unicode"
 
 	"github.com/gorilla/context"
@@ -17,17 +19,24 @@ type User struct {
 	UserId       int
 	Username     string
 	TargetAmount float64
-	TargetDate   string
+	TargetDate   time.Time
 	Currency     string
 	Balance      float64
 	Transactions []Transaction
+	PiggyBank    PiggyBank
+}
+
+type PiggyBank struct {
+	TargetAmount float64
+	TargetDate   time.Time
+	Balance      float64
 }
 
 type Transaction struct {
 	TransactionId int
 	//Storing UserId seems useless, mb delete later
 	//UserId          int
-	TransactionTime string
+	TransactionTime time.Time
 	Amount          float64
 	Category        string
 }
@@ -45,6 +54,7 @@ func main() {
 	http.HandleFunc("/loginauth", loginAuth)
 	http.HandleFunc("/analytics", expenseAnalytics)
 	http.HandleFunc("/logout", logout)
+	http.HandleFunc("/goalssave", goalsSave)
 	http.ListenAndServe(":8000", context.ClearHandler(http.DefaultServeMux))
 }
 
@@ -103,12 +113,14 @@ func loginAuth(w http.ResponseWriter, r *http.Request) {
 	}
 	if correct == true {
 		//Opening current user data
-		rows, err := database.Query(fmt.Sprintf("SELECT user_id, username, target_amount, target_date, currency, balance FROM users WHERE username = '%s'", username))
+		rows, err := database.Query(fmt.Sprintf("SELECT users.user_id, username, target_amount, target_date, currency, users.balance, piggy_bank.balance FROM users  JOIN piggy_bank ON users.user_id = piggy_bank.user_id WHERE username = '%s'", username))
 		if err != nil {
 			fmt.Println(err.Error())
 		}
 		for rows.Next() {
-			rows.Scan(&current.UserId, &current.Username, &current.TargetAmount, &current.TargetDate, &current.Currency, &current.Balance)
+			var t string
+			rows.Scan(&current.UserId, &current.Username, &current.PiggyBank.TargetAmount, &t, &current.Currency, &current.Balance, &current.PiggyBank.Balance)
+			current.PiggyBank.TargetDate = convertToTime(t)
 		}
 		rows, err = database.Query(fmt.Sprintf("SELECT transaction_id, transaction_time, amount, category FROM transactions WHERE user_id = %d", current.UserId))
 		current.Transactions = make([]Transaction, 0)
@@ -117,7 +129,7 @@ func loginAuth(w http.ResponseWriter, r *http.Request) {
 		var amount float64
 		for rows.Next() {
 			rows.Scan(&transaction_id, &transaction_time, &amount, &category)
-			current.Transactions = append(current.Transactions, Transaction{transaction_id, transaction_time, amount, category})
+			current.Transactions = append(current.Transactions, Transaction{transaction_id, convertToTime(transaction_time), amount, category})
 		}
 		//Creating login session
 		session, err := store.Get(r, "session")
@@ -220,12 +232,16 @@ func registerAuth(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//Creating a user
-	statement, err := database.Prepare("INSERT INTO users (username, password) VALUES(?, ?)")
-	defer statement.Close()
+	database.Exec(fmt.Sprintf("INSERT INTO users (username, password) VALUES('%s', '%s')", username, string(hash)))
+	rows, err = database.Query(fmt.Sprintf("SELECT user_id FROM users WHERE username = '%s'", username))
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	statement.Exec(username, string(hash))
+	var user_id int
+	for rows.Next() {
+		rows.Scan(&user_id)
+	}
+	database.Exec(fmt.Sprintf("INSERT INTO piggy_bank (user_id) VALUES(%d)", user_id))
 	tmpl, err := template.ParseFiles("templates/registrationsuccess.html")
 	if err != nil {
 		fmt.Println(err.Error())
@@ -235,7 +251,7 @@ func registerAuth(w http.ResponseWriter, r *http.Request) {
 
 func financialGoals(w http.ResponseWriter, r *http.Request) {
 	session, _ := store.Get(r, "session")
-	username, ok := session.Values["username"]
+	_, ok := session.Values["username"]
 	if !ok {
 		tmpl, err := template.ParseFiles("templates/goals.html")
 		if err != nil {
@@ -248,7 +264,30 @@ func financialGoals(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	tmpl.Execute(w, username)
+	tmpl.Execute(w, current)
+}
+
+func goalsSave(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	amount, err := strconv.ParseFloat(r.FormValue("amount"), 64)
+	if amount != 0 && err == nil {
+		current.PiggyBank.Balance += amount
+		var t Transaction
+		t.TransactionTime = time.Now()
+		t.Amount = amount
+		t.Category = "Savings"
+		t.Add(-1)
+	}
+	newAmount, err := strconv.ParseFloat(r.FormValue("newAmount"), 64)
+	if newAmount != 0 && err == nil {
+		current.PiggyBank.TargetAmount = newAmount
+	}
+	newDate, err := time.Parse(time.Layout, r.FormValue("newDate"))
+	if err == nil {
+		current.PiggyBank.TargetDate = newDate
+	}
+	current.updateUserData()
+	http.Redirect(w, r, "/goals", http.StatusSeeOther)
 }
 
 func expenseTracking(w http.ResponseWriter, r *http.Request) {
@@ -307,17 +346,20 @@ func (u *User) updateUserData() {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	database.Query(fmt.Sprintf("UPDATE users SET target_amount = %v, target_date = '%s', balance = %v", u.TargetAmount, u.TargetDate, u.Balance))
+	database.Exec(fmt.Sprintf("UPDATE users SET balance = %v, username = '%s', currency = '%s' WHERE user_id = %d", u.Balance, u.Username, u.Currency, u.UserId))
+	database.Exec(fmt.Sprintf("UPDATE piggy_bank SET balance = %v, target_amount = %v, target_date = '%s' WHERE user_id = %d", u.PiggyBank.Balance, u.PiggyBank.TargetAmount, u.PiggyBank.TargetDate, u.UserId))
 }
 
-func (t *Transaction) Add() {
+// Add method adds transactions to the user account. Variable c has to be 1 when money is recieved and -1 when money is lost
+func (t *Transaction) Add(c float64) {
 	database, err := sql.Open("sqlite3", "./users.db")
 	defer database.Close()
 	if err != nil {
 		fmt.Println(err.Error())
 	}
+	current.Balance += (t.Amount * c)
 	current.Transactions = append(current.Transactions, *t)
-	database.Query(fmt.Sprintf("INSERT INTO transactions (transaction_time, amount, category) VALUES('%s', %v, '%s')", t.TransactionTime, t.Amount, t.Category))
+	database.Exec(fmt.Sprintf("INSERT INTO transactions (transaction_time, amount, category) VALUES('%s', %v, '%s')", convertToString(t.TransactionTime), t.Amount, t.Category))
 }
 
 func (t *Transaction) Remove() {
@@ -328,4 +370,17 @@ func (t *Transaction) Remove() {
 	}
 	current.Transactions = append(current.Transactions[:t.TransactionId-1], current.Transactions[t.TransactionId:]...)
 	database.Query(fmt.Sprintf("DELETE FROM transactions WHERE transaction_id = %d", t.TransactionId))
+}
+
+func convertToString(t time.Time) string {
+	s := t.Format(time.Layout)
+	return s
+}
+
+func convertToTime(s string) time.Time {
+	t, err := time.Parse(time.Layout, s)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	return t
 }
