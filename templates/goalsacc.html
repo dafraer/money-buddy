@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Main page - Money Buddy</title>
+    <title>Money Buddy</title>
     <style>
         body {
             background-color: white;
@@ -21,6 +21,11 @@
             position: relative;
         }
 
+        header a {
+            text-decoration: none;
+            color: black;
+        }
+
         #logo {
             position: absolute;
             left: 10px;
@@ -29,11 +34,22 @@
             max-height: 80px;
         }
 
+        #signbtn {
+            position: absolute;
+            right: 25px;
+            top: 30px;
+            text-decoration: none;
+            color: black;
+            padding: 7px 14px;
+            border-radius: 10px;
+            background-color: #ffffff; /* Dark Yellow */
+        }
+
         nav {
             display: flex;
             justify-content: space-around;
             align-items: center;
-            margin-top: 10px;
+            margin-top: 35px;
         }
 
         nav a {
@@ -42,6 +58,10 @@
             padding: 8px 16px;
             border-radius: 5px;
             background-color: #ffffff; /* Dark Yellow */
+        }
+
+        nav a.bold {
+            font-weight: bold;
         }
 
         section {
@@ -59,10 +79,11 @@
 
 <body>
     <header>
-        <img id="logo" src="1.png" alt="Money Buddy Logo">
-        <h1>Signed in as {{.Username}}</h1>
+        <a href="/main"> <img id="logo" src="pfp.jpg" alt="Money Buddy Logo"> </a>
+        <a href="/main"> <h1>Hello, {{.}}!</h1> </a>
+        <a id="signbtn" href="/logout">Sign Out</a>
         <nav>
-            <a href="/goals">Financial Goals</a>
+            <a href="/goals" class="bold">Financial Goals</a>
             <a href="/expenses">Budget Tracking</a>
             <a href="/analytics">Expense Analytics</a>
         </nav>
