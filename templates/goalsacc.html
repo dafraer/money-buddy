@@ -94,7 +94,7 @@
             cursor: pointer;
         }
 
-        /* test part! */
+        /* hidden text here */
         .hidden{
             display: none;    
         }
@@ -110,7 +110,9 @@
 <body>
 
     <!-- I'll provide another location for js, but now links are not working(-->
+
     <script>
+        // function for hiddent text
         function toggleVisibility() {
           var hiddenText = document.getElementById('hiddenText');
           hiddenText.style.display = (hiddenText.style.display === 'none' || hiddenText.style.display === '') ? 'inline' : 'none';}
@@ -136,14 +138,17 @@
             <p>Balance: $<span id="balance">{{.PiggyBank.Balance}}</span></p>
         </div>
 
+        <!-- JS part-->
         <button onclick="toggleVisibility()" id="tglbtn"><b>Adjust Settings⌄</b></button>
+
         <div class="form-container hidden" id="hiddenText">
+            <form id="Form" method="post" action="/goalssave"> <!--form for go opens-->
             <h3>Add to Balance</h3>
                 <label for="amount">Amount:</label>
                 <input type="text" id="amount" name="amount">
 
             <h3>Adjust Targets</h3>
-            <form id="Form" method="post" action="/goalssave">
+            
                 <label for="newAmount">New Target Amount:</label>
                 <input type="text" id="newAmount" name="newAmount">
                 <label for="newDate">New Target Date:</label>
@@ -151,7 +156,7 @@
                 <p><br>Date has to be in a 01/02 03:04:05PM '06 -0700 format (January 2, 15:04:05, 2006, in time zone seven hours west of GMT)</p>
                 <button type="submit">Save changes</button>
 
-            </form>
+            </form> <!--form for go closes-->
         </div>
     </main>
 
