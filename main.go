@@ -41,6 +41,12 @@ type Transaction struct {
 	Category        string
 }
 
+type Analytics struct {
+	Username    string
+	Income      float64
+	Expenditure float64
+}
+
 var store = sessions.NewCookieStore([]byte("super-secret"))
 var current User
 
@@ -310,7 +316,7 @@ func expenseTracking(w http.ResponseWriter, r *http.Request) {
 
 func expenseAnalytics(w http.ResponseWriter, r *http.Request) {
 	session, _ := store.Get(r, "session")
-	username, ok := session.Values["username"]
+	_, ok := session.Values["username"]
 	if !ok {
 		tmpl, err := template.ParseFiles("templates/analytics.html")
 		if err != nil {
@@ -323,7 +329,16 @@ func expenseAnalytics(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	tmpl.Execute(w, username)
+	var temp Analytics
+	temp.Username = current.Username
+	for _, v := range current.Transactions {
+		if v.Amount > 0 {
+			temp.Income++
+		} else {
+			temp.Expenditure++
+		}
+	}
+	tmpl.Execute(w, temp)
 }
 
 func logout(w http.ResponseWriter, r *http.Request) {
