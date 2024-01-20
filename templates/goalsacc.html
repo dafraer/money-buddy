@@ -74,6 +74,20 @@
             text-align: justify;
         }
 
+        .progress-bar {
+            position: fixed;
+            padding: 35px 100px;
+            top: 272px;
+            right: 210px;
+        }
+
+        #bar {
+            position: fixed;
+            padding: 40px 100px;
+            top: 235px;
+            right: 255px;
+        }
+
         .form-container {
             text-align: justify;
         }
@@ -131,11 +145,17 @@
     </header>
 
     <main>
+
+        <div class="progress-bar">  <!--progress bar-->
+            <label for="bar">Your Progress</label>
+            <progress id="bar" value="{{.PiggyBank.Balance}}" max="{{.PiggyBank.TargetAmount}}"></progress>    
+        </div>
+
         <div class="tracker">
             <h2>Financial Tracker</h2>
-            <p>Target Amount: $<span id="targetAmount">{{.PiggyBank.TargetAmount}}</span></p>
+            <p>Target Amount: <span id="targetAmount">{{.PiggyBank.TargetAmount}}$</span></p>
             <p>Target Date: <span id="targetDate">{{.PiggyBank.TargetDate}}</span></p>
-            <p>Balance: $<span id="balance">{{.PiggyBank.Balance}}</span></p>
+            <p>Balance: <span id="balance">{{.PiggyBank.Balance}}$</span></p>
         </div>
 
         <!-- JS part-->
