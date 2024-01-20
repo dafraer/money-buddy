@@ -15,7 +15,7 @@
         }
 
         header {
-            background-color: #fbff00; /* Yellow */
+            background-color: #FFE135; /* Yellow */
             padding: 10px;
             text-align: center;
             position: relative;
@@ -25,7 +25,7 @@
             text-decoration: none;
             color: black;
         }
-
+        
         #logo {
             position: absolute;
             left: 10px;
@@ -60,6 +60,15 @@
             background-color: #ffffff; /* Dark Yellow */
         }
 
+        nav a.bold {
+            font-weight: bold;
+            /* only for home button */
+        }
+
+        #homebtn {
+            padding: 8px 49px
+        }
+
         section {
             padding: 20px;
             text-align: justify;
@@ -79,6 +88,7 @@
         <h1>Welcome to Money Buddy</h1>
         <a id="signbtn" href="/login">Sign In</a>
         <nav>
+            <a id="homebtn" href="/main" class="bold">Home</a>
             <a href="/goals">Financial Goals</a>
             <a href="/expenses">Budget Tracking</a>
             <a href="/analytics">Expense Analytics</a>
