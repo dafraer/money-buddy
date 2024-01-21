@@ -15,15 +15,18 @@
         }
         body {
             background-color: white;
-            color: black;
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+
         }
 
         header {
             background-color: #FFE135; /* Yellow */
-            padding: 10px;
+            padding: 1%;
             text-align: center;
             position: relative;
         }
@@ -35,45 +38,73 @@
 
         #logo {
             position: absolute;
-            left: 10px;
-            top: 10px;
-            max-width: 80px;
-            max-height: 80px;
+            left: 2%;
+            top: 2%;
+            max-width: 10vw;
+            max-height: 10vw;
         }
         
         #signbtn {
             position: absolute;
-            right: 25px;
-            top: 30px;
+            right: 2.5%;
+            top: 10%;
             text-decoration: none;
-            color: black;
-            padding: 7px 14px;
-            border-radius: 10px;
-            background-color: #ffffff;
+            color: white;
+            padding: 0.8% 1%;
+            width: 5vw;
+            height: 1vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 3vw;
+            background-color: #000080;           
         }
 
         nav {
             display: flex;
             justify-content: space-around;
             align-items: center;
-            margin-top: 35px;
+            margin-top: 3%;
         }
 
         nav a {
             text-decoration: none;
             color: black;
-            padding: 8px 16px;
-            border-radius: 8px;
+            padding: 1% 1%;
+            width: 11vw;
+            height: 1vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 1vw;
             background-color: #ffffff;
         }
 
         nav a.bold {font-weight: bold;}
 
-        #homebtn {padding: 8px 49px;}
+        #homebtn {
+            text-decoration: none;
+            color: black;
+            padding: 1% 1%;
+            width: 10vw;
+            height: 1vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 1vw;
+            background-color: #ffffff;
+        }
 
         main {
-            padding: 20px;
+            font-size: 1.3vw;
+            padding: 2%;
             text-align: justify;
+        }
+
+        #title {
+            text-align: center;
+            position: relative;
+            height: 3vw;
         }
 
         .hidden{display: none;}
@@ -94,33 +125,42 @@
             cursor: pointer;
         }
 
+        .stats {
+            position: absolute;
+            top: 41.5%;
+            left: 15%;
+            transform: translateX(-50%);
+            width: 20vw;
+        }
+
         #totalInc {color: green;
             font-weight: bold;}
 
         #totalSpent{color: red;
             font-weight: bold;}
-
+        
 
         .pie-chart {
-            position: absolute;
-            top: 193px;
-            right: 570px;
-            width: 250px;
-            height: 250px;
+            position: relative;
+            top: 40%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20vw;
+            height: 20vw;
             border-radius: 50%;
-            background: conic-gradient( /* new categories should appear here as well */
+            background: conic-gradient(
                 #00B28B 0% var(--foodCSS),
                 #FF6347 var(--foodCSS) var(--billsCSS),
                 blueviolet var(--billsCSS) 100%
             );
-        }           
+        }
 
         #legend {
             position: absolute;
-            right: 200px;
-            top: 193px;
-            margin: auto;   
-            width: 200px;
+            top: 40%;
+            right: 15%;
+            transform: translateX(50%);
+            width: 20vw;
         }
 
         #ch3 { text-align: center;}
@@ -130,10 +170,15 @@
         #transport_c {color: blueviolet;font-weight: bold;}
 
         footer {
-            background-color: #ffffff; 
-            padding: 10px;
+            background-color: #333;
+            color: #fff;
+            padding: 2%;
             text-align: center;
+            position: relative;
             bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            
         }
     </style>
 </head>
@@ -174,30 +219,34 @@
     </header>
 
     <main>
-        <h2>Expense Analytics</h2>
-        <!--totals-->
-        <div class="stats">
-            <p>Total Income: <span id="totalInc"> <!--Kamil input variable here--> 900$</span></p>
-            <p>Total Spent: <span id="totalSpent"> <!--Kamil input variable here--> 900$</span></p>
-        </div>
+        <h2 id="title">Expense Analytics</h2>
+
+        <!--pie chart-->
+        <div class="pie-chart"></div>
+        
+        <!--Bar Chart-->
+        <div class="barchart-container">
+            <!--totals-->
+            <div class="stats">
+                <p><b>Total Income: </b><span id="totalInc"> <!--Kamil input variable here--> 900$</span></p>
+                <p><b>Total Spent: </b><span id="totalSpent"> <!--Kamil input variable here--> 900$</span></p>
+            </div>
+            
+            <button onclick="toggleVisibility()" id="tglbtn"><b>Bar Chart⌄</b></button>
+            <div class="barchart hidden" id="hiddenText">
+                <p>barchart will appear here</p>
+            </div>
+        
         <div id="legend"> 
             <h3 id="ch3">Pie Chart Legend</h3>
             <!--/* new categories should appear here as well */-->
             <p><span id="food_c">Food: </span> 300$<!--<span id=""> Kamil input variable here! $</span>--></p>
-            <p><span id="bills_c">Bills</span>: </span> 300$<!--<span id=""> Kamil input variable here! $</span>--></p>
+            <p><span id="bills_c">Bills: </span> 300$<!--<span id=""> Kamil input variable here! $</span>--></p>
             <p><span id="transport_c">Transport: </span> 300$<!--<span id=""> Kamil input variable here! $</span>--></p>
-        </div>
-        <!--pie chart-->
-        <div class="pie-chart"></div>
-        <!--bar chart-->
-        <button onclick="toggleVisibility()" id="tglbtn"><b>Bar Chart⌄</b></button>
-        <div class="barchart hidden" id="hiddenText">
-            <p>barchart will appear here</p>
         </div>
     </main>
 
     <footer>
-        <br> <br> <br> <br> <br> <br> <br> <!--don't judge me pls   -->
         <p>Contact us at: kdnuriev@gmail.com</p>
         <p>&copy; 2024 Money Buddy. All rights reserved.</p>
     </footer>
