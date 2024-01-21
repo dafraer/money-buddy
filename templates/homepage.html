@@ -8,15 +8,17 @@
     <style>
         body {
             background-color: white;
-            color: black;
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         header {
-            background-color: #FFE135; /* Yellow */
-            padding: 10px;
+            background-color: #FFE135;
+            padding: 1%;
             text-align: center;
             position: relative;
         }
@@ -25,59 +27,88 @@
             text-decoration: none;
             color: black;
         }
-        
+
         #logo {
             position: absolute;
-            left: 10px;
-            top: 10px;
-            max-width: 80px;
-            max-height: 80px;
+            left: 2%;
+            top: 3%;
+            max-width: 7vw;
+            max-height: 7vw;
         }
 
         #signbtn {
             position: absolute;
-            right: 25px;
-            top: 30px;
+            right: 2.5%;
+            top: 20%;
+            text-decoration: none;
+            color: white;
+            padding: 0.8% 1%;
+            width: 5vw;
+            height: 1vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 3vw;
+            background-color: #000080;           
+        }
+
+        header a {
             text-decoration: none;
             color: black;
-            padding: 7px 14px;
-            border-radius: 10px;
-            background-color: #ffffff; /* Dark Yellow */
         }
 
         nav {
             display: flex;
             justify-content: space-around;
             align-items: center;
-            margin-top: 35px;
+            margin-top: 3%;
         }
 
         nav a {
             text-decoration: none;
             color: black;
-            padding: 8px 16px;
-            border-radius: 5px;
-            background-color: #ffffff; /* Dark Yellow */
+            padding: 1% 1%;
+            width: 11vw;
+            height: 1vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 1vw;
+            background-color: #ffffff;
         }
-
+        
         nav a.bold {
             font-weight: bold;
-            /* only for home button */
         }
 
         #homebtn {
-            padding: 8px 49px
+            text-decoration: none;
+            color: black;
+            padding: 1% 1%;
+            width: 10vw;
+            height: 1vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 1vw;
+            background-color: #ffffff;
         }
 
-        section {
-            padding: 20px;
+        main {
+            font-size: 1.3vw;
+            padding: 2%;
             text-align: justify;
         }
 
         footer {
-            background-color: #ffffff; 
-            padding: 10px;
+            background-color: #fff;
+            color: #333;
+            padding: 2%;
             text-align: center;
+            position: relative;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
         }
     </style>
 </head>
@@ -95,10 +126,10 @@
         </nav>
     </header>
 
-    <section>
+    <main>
         <h2>About Money Buddy</h2>
         <p>Discover financial empowerment with Money Buddy - your trusted partner in budget management. Seamlessly track your income, manage expenses, and set personalized financial goals. Our user-friendly platform provides tailored insights, ensuring a secure and private space for your financial journey. Join Money Buddy today and take control of your money with simplicity and confidence.</p>
-    </section>
+    </main>
 
     <footer>
         <p>Contact us at: kdnuriev@gmail.com</p>
