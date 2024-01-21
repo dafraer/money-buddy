@@ -6,6 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Money Buddy</title>
     <style>
+
+        :root {
+            /* new categories should appear here as well */
+            --foodCSS: 0%; 
+            --billsCSS: 0%;
+            --transportCSS: 0%;
+        }
         body {
             background-color: white;
             color: black;
@@ -42,7 +49,7 @@
             color: black;
             padding: 7px 14px;
             border-radius: 10px;
-            background-color: #ffffff; /* Dark Yellow */
+            background-color: #ffffff;
         }
 
         nav {
@@ -57,31 +64,103 @@
             color: black;
             padding: 8px 16px;
             border-radius: 8px;
-            background-color: #ffffff; /* Dark Yellow */
+            background-color: #ffffff;
         }
 
-        nav a.bold {
-            font-weight: bold;
-        }
+        nav a.bold {font-weight: bold;}
 
-        #homebtn {
-            padding: 8px 49px
-        }
+        #homebtn {padding: 8px 49px;}
 
-        section {
+        main {
             padding: 20px;
             text-align: justify;
         }
+
+        .hidden{display: none;}
+
+        #tglbtn {
+            font-size: 20px;
+            background-color: #FFFFFF;
+            border: 0;
+            border-radius: .5rem;
+            box-sizing: border-box;
+            color: #111827;
+            line-height: 1.25rem;
+            padding: 0px;
+            padding-top: 20px;
+            text-align: left;
+            text-decoration: none #D1D5DB solid;
+            text-decoration-thickness: auto;
+            cursor: pointer;
+        }
+
+        #totalInc {color: green;
+            font-weight: bold;}
+
+        #totalSpent{color: red;
+            font-weight: bold;}
+
+
+        .pie-chart {
+            position: absolute;
+            top: 193px;
+            right: 570px;
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: conic-gradient( /* new categories should appear here as well */
+                #00B28B 0% var(--foodCSS),
+                #FF6347 var(--foodCSS) var(--billsCSS),
+                blueviolet var(--billsCSS) 100%
+            );
+        }           
+
+        #legend {
+            position: absolute;
+            right: 200px;
+            top: 193px;
+            margin: auto;   
+            width: 200px;
+        }
+
+        #ch3 { text-align: center;}
+        /* new categories should appear here as well */
+        #food_c {color: #00B28B;font-weight: bold;}
+        #bills_c {color: #FF6347;font-weight: bold;}
+        #transport_c {color: blueviolet;font-weight: bold;}
 
         footer {
             background-color: #ffffff; 
             padding: 10px;
             text-align: center;
+            bottom: 0;
         }
     </style>
 </head>
 
 <body>
+    <script>
+        // function that makes text visible by click
+        function toggleVisibility() {
+            var hiddenText = document.getElementById('hiddenText');
+            hiddenText.style.display = (hiddenText.style.display === 'none' || hiddenText.style.display === '') ? 'inline' : 'none';}
+        
+        // list of variables /* new categories should appear here as well */
+        var food_0 = 300;
+        var bills_0 = 300;
+        var transport_0 = 300;
+        var total = 900;
+
+        // manipulations for right pie chart (with every variable) /* new categories should appear here as well */
+        var food_1 = ((food_0 / total) * 100) + 0; let food_f = String(food_1) + '%';
+        var bills_1 = ((bills_0 / total) * 100) + food_1; let bills_f = String(bills_1) + '%';
+        var transport_1 = ((transport_0 / total) * 100) + transport_1; let transport_f = String(transport_1) + '%';
+
+        // func that changes css variables /* new categories should appear here as well */
+        document.documentElement.style.setProperty('--foodCSS', food_f);
+        document.documentElement.style.setProperty('--billsCSS', bills_f);
+        document.documentElement.style.setProperty('--transportCSS', transport_f);
+    </script>
     <header>
         <a href="/main"> <img id="logo" src="pfp.jpg" alt="Money Buddy Logo"> </a>
         <a href="/main"> <h1>Hello, {{.Username}}!</h1> </a>
@@ -94,15 +173,42 @@
         </nav>
     </header>
 
-    <section>
+    <main>
         <h2>Expense Analytics</h2>
-        <p>Expense Analytics info displayed here.</p>
-    </section>
+        <!--totals-->
+        <div class="stats">
+            <p>Total Income: <span id="totalInc"> <!--Kamil input variable here--> 900$</span></p>
+            <p>Total Spent: <span id="totalSpent"> <!--Kamil input variable here--> 900$</span></p>
+        </div>
+        <div id="legend"> 
+            <h3 id="ch3">Pie Chart Legend</h3>
+            <!--/* new categories should appear here as well */-->
+            <p><span id="food_c">Food: </span> 300$<!--<span id=""> Kamil input variable here! $</span>--></p>
+            <p><span id="bills_c">Bills</span>: </span> 300$<!--<span id=""> Kamil input variable here! $</span>--></p>
+            <p><span id="transport_c">Transport: </span> 300$<!--<span id=""> Kamil input variable here! $</span>--></p>
+        </div>
+        <!--pie chart-->
+        <div class="pie-chart"></div>
+        <!--bar chart-->
+        <button onclick="toggleVisibility()" id="tglbtn"><b>Bar Chart⌄</b></button>
+        <div class="barchart hidden" id="hiddenText">
+            <p>barchart will appear here</p>
+        </div>
+    </main>
 
     <footer>
+        <br> <br> <br> <br> <br> <br> <br> <!--don't judge me pls   -->
         <p>Contact us at: kdnuriev@gmail.com</p>
         <p>&copy; 2024 Money Buddy. All rights reserved.</p>
     </footer>
 </body>
-
 </html>
+
+<!-- how categories are working?
+let see according to category food:
+food_0 = amount of $ spend on that particular category
+food_1 = this amount in percentage (food_0 / total) * 100% - pay attention, for work of the pie chart it's working a bit different for other categories
+food_f = f stands for final. food_f is a string version of food_1 with % sign. it's neccessary for pie chart to work
+food_c = id to make text bold and stylish :)
+-foodCSS = CSS variable; equal to food_f, but it's neccessary for pie chart to work
+thx guys ^)-->
