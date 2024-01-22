@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Money Buddy</title>
     <style>
-        
         body {
-            background-color: white;
+            background-color: #ffffff;
+            color: #76453B;
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
@@ -18,15 +18,15 @@
         }
 
         header {
-            background-color: #FFE135;
+            background-color: #EEB76B	;
             padding: 1%;
             text-align: center;
             position: relative;
-        }
+        }    
 
         header a {
             text-decoration: none;
-            color: black;
+            color: #000000;
         }
 
         #logo {
@@ -36,26 +36,23 @@
             max-width: 7vw;
             max-height: 7vw;
         }
-
+        
         #signbtn {
             position: absolute;
             right: 2.5%;
-            top: 20%;
+            top: 16%;
             text-decoration: none;
-            color: white;
+            background-color: #ffffff;
+            color: #310B0B;
+            font-size: 1vw;
             padding: 0.8% 1%;
-            width: 5vw;
+            width: 4vw;
             height: 1vw;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 3vw;
-            background-color: #000080;           
-        }
-
-        header a {
-            text-decoration: none;
-            color: black;
+            border-radius: 2vw;
+            background-color: #ffffff;
         }
 
         nav {
@@ -67,32 +64,32 @@
 
         nav a {
             text-decoration: none;
-            color: black;
-            padding: 1% 1%;
-            width: 11vw;
-            height: 1vw;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 1vw;
-            background-color: #ffffff;
-        }
-        
-        nav a.bold {
-            font-weight: bold;
-        }
-
-        #homebtn {
-            text-decoration: none;
-            color: black;
-            padding: 1% 1%;
+            color: #ffffff;
+            background-color: #310B0B;
+            font-size: 1.1vw;
+            padding: 0.9% 1%;
             width: 10vw;
             height: 1vw;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 1vw;
+        }
+
+        nav a.bold {font-weight: bold;
+            font-size: 1.1vw;
             background-color: #ffffff;
+            color: #310B0B;}
+
+        #homebtn {
+            text-decoration: none;
+            padding: 0.9% 1%;
+            width: 9.4vw;
+            height: 1vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 1vw;
         }
 
         main {
@@ -101,9 +98,17 @@
             text-align: justify;
         }
 
+        #title {
+            text-align: center;
+            position: relative;
+            height: 3vw;
+            color: #310B0C;
+        }
+
         footer {
+            font-size: 1vw;
             background-color: #fff;
-            color: #333;
+            color: #310B0B;
             padding: 2%;
             text-align: center;
             position: relative;
@@ -111,7 +116,6 @@
             left: 50%;
             transform: translateX(-50%);
         }
-
     </style>
 </head>
 
@@ -129,7 +133,7 @@
     </header>
 
     <main>
-        <h2>Expense Analytics</h2>
+        <h2 id="title">Expense Analytics</h2>
         <p>No info since you are not signed in lil bro.</p>
     </main>
 
