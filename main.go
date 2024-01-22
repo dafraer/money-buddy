@@ -18,8 +18,6 @@ import (
 type User struct {
 	UserId       int
 	Username     string
-	TargetAmount float64
-	TargetDate   time.Time
 	Currency     string
 	Balance      float64
 	Transactions []Transaction
@@ -28,7 +26,7 @@ type User struct {
 
 type PiggyBank struct {
 	TargetAmount float64
-	TargetDate   time.Time
+	TargetDate   string
 	Balance      float64
 }
 
@@ -126,7 +124,12 @@ func loginAuth(w http.ResponseWriter, r *http.Request) {
 		for rows.Next() {
 			var t string
 			rows.Scan(&current.UserId, &current.Username, &current.PiggyBank.TargetAmount, &t, &current.Currency, &current.Balance, &current.PiggyBank.Balance)
-			current.PiggyBank.TargetDate = convertToTime(t)
+			if t == "" {
+				current.PiggyBank.TargetDate = convertToStringDate(time.Now())
+			} else {
+				current.PiggyBank.TargetDate = t
+			}
+
 		}
 		rows, err = database.Query(fmt.Sprintf("SELECT transaction_id, transaction_time, amount, category FROM transactions WHERE user_id = %d", current.UserId))
 		current.Transactions = make([]Transaction, 0)
@@ -288,9 +291,10 @@ func goalsSave(w http.ResponseWriter, r *http.Request) {
 	if newAmount != 0 && err == nil {
 		current.PiggyBank.TargetAmount = newAmount
 	}
-	newDate, err := time.Parse(time.Layout, r.FormValue("newDate"))
+	newDateString := r.FormValue("newDate")
+	_, err = time.Parse(time.DateOnly, r.FormValue("newDate"))
 	if err == nil {
-		current.PiggyBank.TargetDate = newDate
+		current.PiggyBank.TargetDate = newDateString
 	}
 	current.updateUserData()
 	http.Redirect(w, r, "/goals", http.StatusSeeOther)
@@ -374,7 +378,7 @@ func (t *Transaction) Add(c float64) {
 	}
 	current.Balance += (t.Amount * c)
 	current.Transactions = append(current.Transactions, *t)
-	database.Exec(fmt.Sprintf("INSERT INTO transactions (transaction_time, amount, category) VALUES('%s', %v, '%s')", convertToString(t.TransactionTime), t.Amount, t.Category))
+	database.Exec(fmt.Sprintf("INSERT INTO transactions (transaction_time, amount, category) VALUES('%s', %v, '%s')", convertToStringTime(t.TransactionTime), t.Amount, t.Category))
 }
 
 func (t *Transaction) Remove() {
@@ -387,13 +391,18 @@ func (t *Transaction) Remove() {
 	database.Query(fmt.Sprintf("DELETE FROM transactions WHERE transaction_id = %d", t.TransactionId))
 }
 
-func convertToString(t time.Time) string {
-	s := t.Format(time.Layout)
+func convertToStringTime(t time.Time) string {
+	s := t.Format(time.DateTime)
+	return s
+}
+
+func convertToStringDate(t time.Time) string {
+	s := t.Format(time.DateOnly)
 	return s
 }
 
 func convertToTime(s string) time.Time {
-	t, err := time.Parse(time.Layout, s)
+	t, err := time.Parse(time.DateTime, s)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
