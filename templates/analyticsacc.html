@@ -137,7 +137,17 @@
 
         #totalSpent{color: red;
             font-weight: bold;}
-        
+
+        #bananamath {color:#bda102}
+
+        #hidden_info {
+          display: none;
+          text-align:end;
+        }
+
+        #info_hover:hover + #hidden_info {
+            display: block;
+        }
 
         .pie-chart {
             position: relative;
@@ -183,28 +193,6 @@
 </head>
 
 <body>
-    <script>
-        // function that makes text visible by click
-        function toggleVisibility() {
-            var hiddenText = document.getElementById('hiddenText');
-            hiddenText.style.display = (hiddenText.style.display === 'none' || hiddenText.style.display === '') ? 'inline' : 'none';}
-        
-        // list of variables /* new categories should appear here as well */
-        var food_0 = 300;
-        var bills_0 = 300;
-        var transport_0 = 300;
-        var total = 900;
-
-        // manipulations for right pie chart (with every variable) /* new categories should appear here as well */
-        var food_1 = ((food_0 / total) * 100) + 0; let food_f = String(food_1) + '%';
-        var bills_1 = ((bills_0 / total) * 100) + food_1; let bills_f = String(bills_1) + '%';
-        var transport_1 = ((transport_0 / total) * 100) + transport_1; let transport_f = String(transport_1) + '%';
-
-        // func that changes css variables /* new categories should appear here as well */
-        document.documentElement.style.setProperty('--foodCSS', food_f);
-        document.documentElement.style.setProperty('--billsCSS', bills_f);
-        document.documentElement.style.setProperty('--transportCSS', transport_f);
-    </script>
     <header>
         <a href="/main"> <img id="logo" src="pfp.jpg" alt="Money Buddy Logo"> </a>
         <a href="/main"> <h1>Hello, {{.}}!</h1> </a>
@@ -229,9 +217,12 @@
             <div class="stats">
                 <p><b>Total Income: </b><span id="totalInc"> <!--Kamil input variable here--> 900$</span></p>
                 <p><b>Total Spent: </b><span id="totalSpent"> <!--Kamil input variable here--> 900$</span></p>
+                <p><i>You could buy <b><span id="bananamath"></span></b> bananas for that amount of money!</i></p>
+                <span id="info_hover"><b>why?</b></span>
+                <span id="hidden_info"><i>if 1 banana = 0.5$</i></span>
             </div>
             
-            <button onclick="toggleVisibility()" id="tglbtn"><b>Bar Chart⌄</b></button>
+            <button onclick="toggleVisibility()" id="tglbtn"><b>Bar Chart ⌄</b></button>
             <div class="barchart hidden" id="hiddenText">
                 <p>barchart will appear here</p>
             </div>
@@ -249,6 +240,32 @@
         <p>Contact us at: kdnuriev@gmail.com</p>
         <p>&copy; 2024 Money Buddy. All rights reserved.</p>
     </footer>
+    <script>
+        // function that makes text visible by click
+        function toggleVisibility() {
+            var hiddenText = document.getElementById('hiddenText');
+            hiddenText.style.display = (hiddenText.style.display === 'none' || hiddenText.style.display === '') ? 'inline' : 'none';}
+        
+        // list of variables /* new categories should appear here as well */
+        var food_0 = 300;
+        var bills_0 = 300;
+        var transport_0 = 300;
+        var total = 900;
+
+        // manipulations for right pie chart (with every variable) /* new categories should appear here as well */
+        var food_1 = ((food_0 / total) * 100) + 0; let food_f = String(food_1) + '%';
+        var bills_1 = ((bills_0 / total) * 100) + food_1; let bills_f = String(bills_1) + '%';
+        var transport_1 = ((transport_0 / total) * 100) + transport_1; let transport_f = String(transport_1) + '%';
+
+        // func that changes css variables /* new categories should appear here as well */
+        document.documentElement.style.setProperty('--foodCSS', food_f);
+        document.documentElement.style.setProperty('--billsCSS', bills_f);
+        document.documentElement.style.setProperty('--transportCSS', transport_f);
+
+        // banana math
+        var raw_banana = 900; raw_banana = 900 / 0.5; // total expenses
+        document.getElementById('bananamath').innerHTML = raw_banana;
+    </script>
 </body>
 </html>
 
