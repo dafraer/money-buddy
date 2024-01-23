@@ -242,9 +242,9 @@
         <div id="legend"> 
             <h3 id="ch3">Pie Chart Legend</h3>
             <!--/* new categories should appear here as well */-->
-            <p><span id="food_c">{{.CategoriesNames 0}}: </span> {{.CategoriesExpense 0}}$<!--<span id=""> Kamil input variable here! $</span>--></p>
-            <p><span id="bills_c">{{.CategoriesNames 1}}: </span> {{.CategoriesExpense 1}}$<!--<span id=""> Kamil input variable here! $</span>--></p>
-            <p><span id="transport_c">{{.CategoriesNames 2}}: </span> {{.CategoriesExpense 2}}$<!--<span id=""> Kamil input variable here! $</span>--></p>
+            <p><span id="food_c">{{.Category1.Name}}: </span> {{.Category1.Amount}}$<!--<span id=""> Kamil input variable here! $</span>--></p>
+            <p><span id="bills_c">{{.Category2.Name}}: </span> {{.Category2.Amount}}$<!--<span id=""> Kamil input variable here! $</span>--></p>
+            <p><span id="transport_c">{{.Category3.Name}}: </span> {{.Category3.Amount}}$<!--<span id=""> Kamil input variable here! $</span>--></p>
         </div>
     </main>
 
