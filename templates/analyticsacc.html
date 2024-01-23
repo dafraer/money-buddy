@@ -9,9 +9,11 @@
 
         :root {
             /* new categories should appear here as well */
-            --foodCSS: 0%; 
-            --billsCSS: 0%;
-            --transportCSS: 0%;
+            --top1CSS: 0%; 
+            --top2CSS: 0%;
+            --top3CSS: 0%;
+            --top4CSS: 0%;
+            --otherCSS: 0%;
         }
 
         body {
@@ -225,8 +227,8 @@
         <div class="barchart-container">
             <!--totals-->
             <div class="stats">
-                <p><b>Total Income: </b><span id="totalInc"> <!--Kamil input variable here--> {{.Income}}$</span></p>
-                <p><b>Total Spent: </b><span id="totalSpent"> <!--Kamil input variable here--> {{.Expenditure}}$</span></p>
+                <p><b>Total Income: </b><span id="totalInc">{{.Income}}$</span></p>
+                <p><b>Total Spent: </b><span id="totalSpent">{{.Expenditure}}$</span></p>
                 <p><i>You could buy <b><span id="bananamath"></span></b> bananas for that amount of money!</i></p>
                 <span id="info_hover"><b>why?</b></span>
                 <span id="hidden_info"><i>if 1 banana = 0.5$</i></span>
@@ -240,9 +242,11 @@
         <div id="legend"> 
             <h3 id="ch3">Pie Chart Legend</h3>
             <!--/* new categories should appear here as well */-->
-            <p><span id="food_c">{{.Category1.Name}}: </span> {{.Category1.Amount}}$<!--<span id=""> Kamil input variable here! $</span>--></p>
-            <p><span id="bills_c">{{.Category2.Name}}: </span> {{.Category2.Amount}}$<!--<span id=""> Kamil input variable here! $</span>--></p>
-            <p><span id="transport_c">{{.Category3.Name}}: </span> {{.Category3.Amount}}$<!--<span id=""> Kamil input variable here! $</span>--></p>
+            <p><span id="top1">{{.Category1.Name}}: </span> {{.Category1.Amount}}$</p>
+            <p><span id="top2">{{.Category2.Name}}: </span> {{.Category2.Amount}}$</p>
+            <p><span id="top3">{{.Category3.Name}}: </span> {{.Category3.Amount}}$</p>
+            <p><span id="top4">{{.Category4.Name}}: </span> {{.Category4.Amount}}$</p>
+            <p><span id="other">Other: </span> {{.Category5.Amount}}$</p>
         </div>
     </main>
 
@@ -257,24 +261,31 @@
             hiddenText.style.display = (hiddenText.style.display === 'none' || hiddenText.style.display === '') ? 'inline' : 'none';}
         
         // list of variables /* new categories should appear here as well */
-        var food_0 = 300;
-        var bills_0 = 300;
-        var transport_0 = 300;
-        var total = 900;
+        // var food_0 = 300;
+        // var bills_0 = 300;
+        // var transport_0 = 300;
+        // var total = 900;
 
         // manipulations for right pie chart (with every variable) /* new categories should appear here as well */
-        var food_1 = ((food_0 / total) * 100) + 0; let food_f = String(food_1) + '%';
-        var bills_1 = ((bills_0 / total) * 100) + food_1; let bills_f = String(bills_1) + '%';
-        var transport_1 = ((transport_0 / total) * 100) + transport_1; let transport_f = String(transport_1) + '%';
-
+        
+      /*  var top1_1 = (({{.Category1.Name}}/ total) * 100) + 0; let top1_f = String(top1_1) + '%';
+        var top2_1 = (({{.Category2.Name}}/ total) * 100) + top1_1; let top2_f = String(top2_1) + '%';
+        var top3_1 = (({{.Category3.Name}}/ total) * 100) + top2_1; let top3_f = String(top3_1) + '%';
+        var top4_1 = (({{.Category4.Name}}/ total) * 100) + top3_1; let top4_f = String(top4_1) + '%';
+        var other_1 = ((other/ total) * 100) + top4_1; let other_f = String(other_1) + '%';
+      */ 
         // func that changes css variables /* new categories should appear here as well */
-        document.documentElement.style.setProperty('--foodCSS', food_f);
-        document.documentElement.style.setProperty('--billsCSS', bills_f);
-        document.documentElement.style.setProperty('--transportCSS', transport_f);
+        /* document.documentElement.style.setProperty('--top1CSS', top1_f);
+        document.documentElement.style.setProperty('--top2CSS', top2_f);
+        document.documentElement.style.setProperty('--top3CSS', top3_f);
+        document.documentElement.style.setProperty('--top4CSS', top4_f);
+        document.documentElement.style.setProperty('--otherCSS', other_f); */
 
         // banana math
-        var raw_banana = 900; raw_banana = 900 / 0.5; // total expenses
+        // var raw_banana = {{.Expenditure}};
+        // raw_banana = 900 / 0.5; // total expenses
         document.getElementById('bananamath').innerHTML = raw_banana;
+
     </script>
 </body>
 </html>

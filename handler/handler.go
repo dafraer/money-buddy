@@ -22,7 +22,6 @@ func HandleRequest() {
 	store = sessions.NewCookieStore([]byte("super-secret"))
 	current = db.User{}
 	//http.Handle("/pfp.jpg", http.FileServer(http.Dir("templates/images")))
-	// Makar was here and changed pfp.jpg to pfp2.png, sorry bro
 	http.HandleFunc("/images/pfp2.png", imageHandler)
 	http.HandleFunc("/main", homePageHandler)
 	http.HandleFunc("/login", loginHandler)
