@@ -1,10 +1,11 @@
     :root {
-        --top1CSS: 0%; 
-        --top2CSS: 0%;
-        --top3CSS: 0%;
-        --top4CSS: 0%;
-        --otherCSS: 0%;
-    }
+            --top1CSS: 0%; 
+            --top2CSS: 0%;
+            --top3CSS: 0%;
+            --top4CSS: 0%;
+            --otherCSS: 0%;
+            --fullCSS: 0%;
+        }
 
     body {
         background-color: #ffffff;
@@ -177,9 +178,11 @@
         height: 20vw;
         border-radius: 50%;
         background: conic-gradient(
-            #E2703A 0% var(--foodCSS),
+            #43766C 0% var(--fullCSS)
+           /* #E2703A 0% var(--foodCSS),
             #9C3D54 var(--foodCSS) var(--billsCSS),
-            #351F39 var(--billsCSS) 100%
+            #351F39 var(--billsCSS) 100% */
+            
         );
     }
 

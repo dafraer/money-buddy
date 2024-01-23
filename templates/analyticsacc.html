@@ -9,12 +9,12 @@
     <style>
 
         :root {
-            /* new categories should appear here as well */
             --top1CSS: 0%; 
             --top2CSS: 0%;
             --top3CSS: 0%;
             --top4CSS: 0%;
             --otherCSS: 0%;
+            --fullCSS: 0%;
         }
 
         body {
@@ -170,9 +170,11 @@
             height: 20vw;
             border-radius: 50%;
             background: conic-gradient(
-                #E2703A 0% var(--foodCSS),
+                #43766C 0% var(--fullCSS)
+               /* #E2703A 0% var(--foodCSS),
                 #9C3D54 var(--foodCSS) var(--billsCSS),
-                #351F39 var(--billsCSS) 100%
+                #351F39 var(--billsCSS) 100% */
+                
             );
         }
 
@@ -338,6 +340,14 @@
         document.documentElement.style.setProperty('--top4CSS', top4_f);
         document.documentElement.style.setProperty('--otherCSS', other_f); */
 
+        // pie always full (even wuthout expenses)
+        var full = 100;
+        let full1 = String(full) + '%';
+        document.documentElement.style.setProperty('--fullCSS', full1);
+
+       /* if ({{.Expenditure}} == null) {
+            document.documentElement.style.setProperty('--fullCSS', full);}   */
+        
         // banana math
         // var raw_banana = {{.Expenditure}};
         // raw_banana = 900 / 0.5; // total expenses
