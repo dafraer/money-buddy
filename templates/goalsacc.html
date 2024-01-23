@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
     <title>Money Buddy</title>
     <style>
         body {
@@ -31,10 +32,10 @@
 
         #logo {
             position: absolute;
-            left: 2%;
-            top: 3%;
-            max-width: 7vw;
-            max-height: 7vw;
+            left: 1%;
+            top: 5%;
+            max-width: 6vw;
+            max-height: 6vw;
         }
         
         #signbtn {
@@ -143,7 +144,7 @@
 
 <body>
     <header>
-        <a href="/main"> <img id="logo" src="images/pfp.jpg" alt="Money Buddy Logo"> </a>
+        <a href="/main"> <img id="logo" src="images/pfp2.png" alt="Money Buddy Logo"> </a>
         <a href="/main"> <h1 id="hello">Hello, {{.Username}}!</h1> </a>
         <a id="signbtn" href="/logout">Sign Out</a>
         <nav>
@@ -163,9 +164,9 @@
 
         <div class="tracker">
             <h2 id="title">Your Piggy Bank</h2>
-            <p>Target Amount: <span id="targetAmount">{{.PiggyBank.TargetAmount}}$</span></p>
+            <p>Target Amount: <span id="targetAmount">{{.PiggyBank.TargetAmount}}{{.Currency}}</span></p>
             <p>Target Date: <span id="targetDate">{{.PiggyBank.TargetDate}}</span></p>
-            <p>Balance: <span id="balance">{{.PiggyBank.Balance}}$</span></p>
+            <p>Balance: <span id="balance">{{.PiggyBank.Balance}}{{.Currency}}</span></p>
         </div>
 
         <div class="form-container">
@@ -180,7 +181,8 @@
                 <input type="text" id="newAmount" name="newAmount">
                 <label for="newDate">New Target Date:</label>
                 <input type="text" id="newDate" name="newDate" >
-                <p><br>Date has to be in a 01/02 03:04:05PM '06 -0700 format (January 2, 15:04:05, 2006, in time zone seven hours west of GMT)</p>
+                <p><br>Date has to be in a YYYY-MM-DD format</p>
+                <!--01/02 03:04:05PM '06 -0700 format (January 2, 15:04:05, 2006, in time zone seven hours west of GMT)-->
                 <button type="submit">Save changes</button>
 
             </form> <!--form for go closes-->
