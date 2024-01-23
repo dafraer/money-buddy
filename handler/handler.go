@@ -1,7 +1,7 @@
-package main
+package handler
 
 import (
-	"database/sql"
+	"MoneyBuddy/db"
 	"fmt"
 	"html/template"
 	"net/http"
@@ -11,58 +11,29 @@ import (
 
 	"github.com/gorilla/context"
 	"github.com/gorilla/sessions"
-	_ "github.com/mattn/go-sqlite3"
 	"golang.org/x/crypto/bcrypt"
 )
 
-type User struct {
-	UserId       int
-	Username     string
-	Currency     string
-	Balance      float64
-	Transactions []Transaction
-	PiggyBank    PiggyBank
-}
+var store *sessions.CookieStore
+var current db.User
 
-type PiggyBank struct {
-	TargetAmount float64
-	TargetDate   string
-	Balance      float64
-}
-
-type Transaction struct {
-	TransactionId int
-	//Storing UserId seems useless, mb delete later
-	//UserId          int
-	TransactionTime time.Time
-	Amount          float64
-	Category        string
-}
-
-type Analytics struct {
-	Username    string
-	Income      float64
-	Expenditure float64
-}
-
-var store = sessions.NewCookieStore([]byte("super-secret"))
-var current User
-
-func main() {
-	http.HandleFunc("/main", homePage)
-	http.HandleFunc("/login", login)
-	http.HandleFunc("/register", register)
-	http.HandleFunc("/registerauth", registerAuth)
-	http.HandleFunc("/goals", financialGoals)
-	http.HandleFunc("/expenses", expenseTracking)
-	http.HandleFunc("/loginauth", loginAuth)
-	http.HandleFunc("/analytics", expenseAnalytics)
-	http.HandleFunc("/logout", logout)
-	http.HandleFunc("/goalssave", goalsSave)
+func HandleRequest() {
+	store = sessions.NewCookieStore([]byte("super-secret"))
+	current = db.User{}
+	http.HandleFunc("/main", homePageHandler)
+	http.HandleFunc("/login", loginHandler)
+	http.HandleFunc("/register", registerHandler)
+	http.HandleFunc("/registerauth", registerAuthHandler)
+	http.HandleFunc("/goals", financialGoalsHandler)
+	http.HandleFunc("/expenses", expenseTrackingHandler)
+	http.HandleFunc("/loginauth", loginAuthHandler)
+	http.HandleFunc("/analytics", expenseAnalyticsHandler)
+	http.HandleFunc("/logout", logoutHandler)
+	http.HandleFunc("/goalssave", financialGoalsSaveHandler)
 	http.ListenAndServe(":8000", context.ClearHandler(http.DefaultServeMux))
 }
 
-func homePage(w http.ResponseWriter, r *http.Request) {
+func homePageHandler(w http.ResponseWriter, r *http.Request) {
 	session, _ := store.Get(r, "session")
 	_, ok := session.Values["username"]
 	if !ok {
@@ -80,7 +51,7 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, current)
 }
 
-func login(w http.ResponseWriter, r *http.Request) {
+func loginHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("templates/login.html")
 	if err != nil {
 		fmt.Println(err.Error())
@@ -88,58 +59,15 @@ func login(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, nil)
 }
 
-func loginAuth(w http.ResponseWriter, r *http.Request) {
-	database, err := sql.Open("sqlite3", "./users.db")
-	defer database.Close()
-	if err != nil {
-		fmt.Println(err.Error())
-	}
+func loginAuthHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	username := r.FormValue("username")
 	password := r.FormValue("password")
 	//Check the validity of username and password
-	rows, err := database.Query("SELECT username, password FROM users")
-	defer rows.Close()
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	var usernameDB, passwordDB string
-	correct := false
-	for rows.Next() {
-		rows.Scan(&usernameDB, &passwordDB)
-		if usernameDB == username {
-			err := bcrypt.CompareHashAndPassword([]byte(passwordDB), []byte(password))
-			if err == nil {
-				correct = true
-			}
-			break
-		}
-	}
+	correct := db.Authentication(username, password)
 	if correct == true {
 		//Opening current user data
-		rows, err := database.Query(fmt.Sprintf("SELECT users.user_id, username, target_amount, target_date, currency, users.balance, piggy_bank.balance FROM users  JOIN piggy_bank ON users.user_id = piggy_bank.user_id WHERE username = '%s'", username))
-		if err != nil {
-			fmt.Println(err.Error())
-		}
-		for rows.Next() {
-			var t string
-			rows.Scan(&current.UserId, &current.Username, &current.PiggyBank.TargetAmount, &t, &current.Currency, &current.Balance, &current.PiggyBank.Balance)
-			if t == "" {
-				current.PiggyBank.TargetDate = convertToStringDate(time.Now())
-			} else {
-				current.PiggyBank.TargetDate = t
-			}
-
-		}
-		rows, err = database.Query(fmt.Sprintf("SELECT transaction_id, transaction_time, amount, category FROM transactions WHERE user_id = %d", current.UserId))
-		current.Transactions = make([]Transaction, 0)
-		var transaction_id int
-		var transaction_time, category string
-		var amount float64
-		for rows.Next() {
-			rows.Scan(&transaction_id, &transaction_time, &amount, &category)
-			current.Transactions = append(current.Transactions, Transaction{transaction_id, convertToTime(transaction_time), amount, category})
-		}
+		current = db.GetUserData(username)
 		//Creating login session
 		session, err := store.Get(r, "session")
 		if err != nil {
@@ -161,7 +89,7 @@ func loginAuth(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func register(w http.ResponseWriter, r *http.Request) {
+func registerHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("templates/registration.html")
 	if err != nil {
 		fmt.Println(err.Error())
@@ -169,12 +97,7 @@ func register(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, nil)
 }
 
-func registerAuth(w http.ResponseWriter, r *http.Request) {
-	database, err := sql.Open("sqlite3", "./users.db")
-	defer database.Close()
-	if err != nil {
-		fmt.Println(err.Error())
-	}
+func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	username := r.FormValue("username")
 	password := r.FormValue("password")
@@ -208,20 +131,8 @@ func registerAuth(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//Checking if user already exists
-	rows, err := database.Query("SELECT username FROM users")
-	defer rows.Close()
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	var usernameDB string
-	exists := false
-	for rows.Next() {
-		rows.Scan(&usernameDB)
-		if usernameDB == username {
-			exists = true
-		}
-	}
-	if exists == true {
+	exists := db.Exists(username)
+	if exists {
 		tmpl, err := template.ParseFiles("templates/registration.html")
 		if err != nil {
 			fmt.Println(err.Error())
@@ -241,16 +152,7 @@ func registerAuth(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//Creating a user
-	database.Exec(fmt.Sprintf("INSERT INTO users (username, password) VALUES('%s', '%s')", username, string(hash)))
-	rows, err = database.Query(fmt.Sprintf("SELECT user_id FROM users WHERE username = '%s'", username))
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	var user_id int
-	for rows.Next() {
-		rows.Scan(&user_id)
-	}
-	database.Exec(fmt.Sprintf("INSERT INTO piggy_bank (user_id) VALUES(%d)", user_id))
+	db.CreateNewUser(username, string(hash))
 	tmpl, err := template.ParseFiles("templates/registrationsuccess.html")
 	if err != nil {
 		fmt.Println(err.Error())
@@ -258,7 +160,7 @@ func registerAuth(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, nil)
 }
 
-func financialGoals(w http.ResponseWriter, r *http.Request) {
+func financialGoalsHandler(w http.ResponseWriter, r *http.Request) {
 	session, _ := store.Get(r, "session")
 	_, ok := session.Values["username"]
 	if !ok {
@@ -276,16 +178,16 @@ func financialGoals(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, current)
 }
 
-func goalsSave(w http.ResponseWriter, r *http.Request) {
+func financialGoalsSaveHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	amount, err := strconv.ParseFloat(r.FormValue("amount"), 64)
 	if amount != 0 && err == nil {
 		current.PiggyBank.Balance += amount
-		var t Transaction
+		var t db.Transaction
 		t.TransactionTime = time.Now()
 		t.Amount = amount
 		t.Category = "Savings"
-		t.Add(-1)
+		current.Add(&t, -1)
 	}
 	newAmount, err := strconv.ParseFloat(r.FormValue("newAmount"), 64)
 	if newAmount != 0 && err == nil {
@@ -296,11 +198,11 @@ func goalsSave(w http.ResponseWriter, r *http.Request) {
 	if err == nil {
 		current.PiggyBank.TargetDate = newDateString
 	}
-	current.updateUserData()
+	current.UpdateUserData()
 	http.Redirect(w, r, "/goals", http.StatusSeeOther)
 }
 
-func expenseTracking(w http.ResponseWriter, r *http.Request) {
+func expenseTrackingHandler(w http.ResponseWriter, r *http.Request) {
 	session, _ := store.Get(r, "session")
 	username, ok := session.Values["username"]
 	if !ok {
@@ -318,7 +220,7 @@ func expenseTracking(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, username)
 }
 
-func expenseAnalytics(w http.ResponseWriter, r *http.Request) {
+func expenseAnalyticsHandler(w http.ResponseWriter, r *http.Request) {
 	session, _ := store.Get(r, "session")
 	_, ok := session.Values["username"]
 	if !ok {
@@ -333,7 +235,7 @@ func expenseAnalytics(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	var temp Analytics
+	var temp db.Analytics
 	temp.Username = current.Username
 	for _, v := range current.Transactions {
 		if v.Amount > 0 {
@@ -345,9 +247,9 @@ func expenseAnalytics(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, temp)
 }
 
-func logout(w http.ResponseWriter, r *http.Request) {
+func logoutHandler(w http.ResponseWriter, r *http.Request) {
 	//Saving user data
-	current.updateUserData()
+	current.UpdateUserData()
 	session, _ := store.Get(r, "session")
 	//Deleting session
 	delete(session.Values, "username")
@@ -357,38 +259,6 @@ func logout(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err.Error())
 	}
 	tmpl.Execute(w, nil)
-}
-
-func (u *User) updateUserData() {
-	database, err := sql.Open("sqlite3", "./users.db")
-	defer database.Close()
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	database.Exec(fmt.Sprintf("UPDATE users SET balance = %v, username = '%s', currency = '%s' WHERE user_id = %d", u.Balance, u.Username, u.Currency, u.UserId))
-	database.Exec(fmt.Sprintf("UPDATE piggy_bank SET balance = %v, target_amount = %v, target_date = '%s' WHERE user_id = %d", u.PiggyBank.Balance, u.PiggyBank.TargetAmount, u.PiggyBank.TargetDate, u.UserId))
-}
-
-// Add method adds transactions to the user account. Variable c has to be 1 when money is recieved and -1 when money is lost
-func (t *Transaction) Add(c float64) {
-	database, err := sql.Open("sqlite3", "./users.db")
-	defer database.Close()
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	current.Balance += (t.Amount * c)
-	current.Transactions = append(current.Transactions, *t)
-	database.Exec(fmt.Sprintf("INSERT INTO transactions (transaction_time, amount, category) VALUES('%s', %v, '%s')", convertToStringTime(t.TransactionTime), t.Amount, t.Category))
-}
-
-func (t *Transaction) Remove() {
-	database, err := sql.Open("sqlite3", "./users.db")
-	defer database.Close()
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	current.Transactions = append(current.Transactions[:t.TransactionId-1], current.Transactions[t.TransactionId:]...)
-	database.Query(fmt.Sprintf("DELETE FROM transactions WHERE transaction_id = %d", t.TransactionId))
 }
 
 func convertToStringTime(t time.Time) string {
