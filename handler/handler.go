@@ -20,6 +20,8 @@ var current db.User
 func HandleRequest() {
 	store = sessions.NewCookieStore([]byte("super-secret"))
 	current = db.User{}
+	//http.Handle("/pfp.jpg", http.FileServer(http.Dir("templates/images")))
+	http.HandleFunc("/images/pfp.jpg", imageHandler)
 	http.HandleFunc("/main", homePageHandler)
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/register", registerHandler)
@@ -31,6 +33,10 @@ func HandleRequest() {
 	http.HandleFunc("/logout", logoutHandler)
 	http.HandleFunc("/goalssave", financialGoalsSaveHandler)
 	http.ListenAndServe(":8000", context.ClearHandler(http.DefaultServeMux))
+}
+
+func imageHandler(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "templates/images/pfp.jpg")
 }
 
 func homePageHandler(w http.ResponseWriter, r *http.Request) {
