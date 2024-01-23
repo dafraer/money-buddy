@@ -29,7 +29,7 @@ func (u *User) Add(t *Transaction, c float64) {
 	}
 	u.Balance += (t.Amount * c)
 	u.Transactions = append(u.Transactions, *t)
-	database.Exec(fmt.Sprintf("INSERT INTO transactions (transaction_time, amount, category) VALUES('%s', %v, '%s')", t.TransactionTime.Format(time.DateTime), t.Amount, t.Category))
+	database.Exec(fmt.Sprintf("INSERT INTO transactions (user_id, transaction_time, amount, category) VALUES('%d', '%s', %v, '%s')", u.UserId, t.TransactionTime.Format(time.DateTime), t.Amount*c, t.Category))
 }
 
 func (u *User) Remove(t *Transaction) {
@@ -163,22 +163,36 @@ func GetAnalyticsData(username string) Analytics {
 			a.Expenditure += t
 		}
 	}
+	//Лютейший костыль
+	//Но без него выводит -0
+	if a.Expenditure != 0 {
+		a.Expenditure *= -1
+	}
+
 	//Calculating by category
-	rows, err = database.Query(fmt.Sprintf("SELECT category,  SUM(amount) FROM transactions JOIN users ON users.user_id = transactions.user_id GROUP BY category HAVING username = '%s' ORDER BY SUM(amount) DESC", username))
+	rows, err = database.Query(fmt.Sprintf("SELECT category,  SUM(amount) FROM transactions JOIN users ON users.user_id = transactions.user_id GROUP BY category HAVING username = '%s' AND amount < 0 ORDER BY SUM(amount) DESC", username))
 	if err != nil {
 		log.Println(err.Error())
 	}
 	i := 0
+	var category [5]string
+	var amount [5]float64
 	for rows.Next() {
-		var category string
-		var amount float64
-		rows.Scan(&category, &amount)
-		a.CategoriesExpense[i] = amount
-		a.CategoriesNames[i] = category
+		rows.Scan(&category[i], &amount[i])
+		amount[i] *= -1
 		if i < 4 {
 			i++
 		}
-
 	}
+	a.Category1.Name = category[0]
+	a.Category1.Amount = amount[0]
+	a.Category2.Name = category[1]
+	a.Category2.Amount = amount[1]
+	a.Category3.Name = category[2]
+	a.Category3.Amount = amount[2]
+	a.Category4.Name = category[3]
+	a.Category4.Amount = amount[3]
+	a.Category5.Name = category[4]
+	a.Category5.Amount = amount[4]
 	return a
 }
