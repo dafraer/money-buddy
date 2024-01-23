@@ -6,6 +6,7 @@ import (
 	"github.com/gorilla/sessions"
 )
 
+// delete this:
 var store = sessions.NewCookieStore([]byte("super-secret"))
 
 func main() {
