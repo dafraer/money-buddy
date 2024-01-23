@@ -4,6 +4,7 @@ import (
 	"MoneyBuddy/db"
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -45,14 +46,14 @@ func homePageHandler(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		tmpl, err := template.ParseFiles("templates/homepage.html")
 		if err != nil {
-			fmt.Println(err.Error())
+			log.Println(err.Error())
 		}
 		tmpl.Execute(w, nil)
 		return
 	}
 	tmpl, err := template.ParseFiles("templates/homepageacc.html")
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Println(err.Error())
 	}
 	tmpl.Execute(w, current)
 }
@@ -60,7 +61,7 @@ func homePageHandler(w http.ResponseWriter, r *http.Request) {
 func loginHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("templates/login.html")
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Println(err.Error())
 	}
 	tmpl.Execute(w, nil)
 }
@@ -77,19 +78,19 @@ func loginAuthHandler(w http.ResponseWriter, r *http.Request) {
 		//Creating login session
 		session, err := store.Get(r, "session")
 		if err != nil {
-			fmt.Println(err.Error())
+			log.Println(err.Error())
 		}
 		session.Values["username"] = username
 		session.Save(r, w)
 		tmpl, err := template.ParseFiles("templates/loginsuccess.html")
 		if err != nil {
-			fmt.Println(err.Error())
+			log.Println(err.Error())
 		}
 		tmpl.Execute(w, nil)
 	} else {
 		tmpl, err := template.ParseFiles("templates/login.html")
 		if err != nil {
-			fmt.Println(err.Error())
+			log.Println(err.Error())
 		}
 		tmpl.Execute(w, "Incorrect username or password. Please try again.")
 	}
@@ -98,7 +99,7 @@ func loginAuthHandler(w http.ResponseWriter, r *http.Request) {
 func registerHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("templates/registration.html")
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Println(err.Error())
 	}
 	tmpl.Execute(w, nil)
 }
@@ -131,7 +132,7 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 	if len(username) > 20 || len(username) < 1 || len(password) < 8 || spacesInUsername || spacesInPassword || notASCIIPassowrd || notASCIIUsername {
 		tmpl, err := template.ParseFiles("templates/registration.html")
 		if err != nil {
-			fmt.Println(err.Error())
+			log.Println(err.Error())
 		}
 		tmpl.Execute(w, "Password or username does not meet the requirements.")
 		return
@@ -141,7 +142,7 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 	if exists {
 		tmpl, err := template.ParseFiles("templates/registration.html")
 		if err != nil {
-			fmt.Println(err.Error())
+			log.Println(err.Error())
 		}
 		tmpl.Execute(w, "Account already exists")
 		return
@@ -152,7 +153,7 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err.Error())
 		tmpl, err := template.ParseFiles("templates/registration.html")
 		if err != nil {
-			fmt.Println(err.Error())
+			log.Println(err.Error())
 		}
 		tmpl.Execute(w, "There was a problem registering new user")
 		return
@@ -161,7 +162,7 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 	db.CreateNewUser(username, string(hash))
 	tmpl, err := template.ParseFiles("templates/registrationsuccess.html")
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Println(err.Error())
 	}
 	tmpl.Execute(w, nil)
 }
@@ -172,14 +173,14 @@ func financialGoalsHandler(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		tmpl, err := template.ParseFiles("templates/goals.html")
 		if err != nil {
-			fmt.Println(err.Error())
+			log.Println(err.Error())
 		}
 		tmpl.Execute(w, nil)
 		return
 	}
 	tmpl, err := template.ParseFiles("templates/goalsacc.html")
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Println(err.Error())
 	}
 	tmpl.Execute(w, current)
 }
@@ -214,14 +215,14 @@ func expenseTrackingHandler(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		tmpl, err := template.ParseFiles("templates/expenses.html")
 		if err != nil {
-			fmt.Println(err.Error())
+			log.Println(err.Error())
 		}
 		tmpl.Execute(w, nil)
 		return
 	}
 	tmpl, err := template.ParseFiles("templates/expensesacc.html")
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Println(err.Error())
 	}
 	tmpl.Execute(w, username)
 }
@@ -232,14 +233,14 @@ func expenseAnalyticsHandler(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		tmpl, err := template.ParseFiles("templates/analytics.html")
 		if err != nil {
-			fmt.Println(err.Error())
+			log.Println(err.Error())
 		}
 		tmpl.Execute(w, nil)
 		return
 	}
 	tmpl, err := template.ParseFiles("templates/analyticsacc.html")
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Println(err.Error())
 	}
 	var temp db.Analytics
 	temp.Username = current.Username
@@ -262,7 +263,7 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 	session.Save(r, w)
 	tmpl, err := template.ParseFiles("templates/logout.html")
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Println(err.Error())
 	}
 	tmpl.Execute(w, nil)
 }
@@ -280,7 +281,7 @@ func convertToStringDate(t time.Time) string {
 func convertToTime(s string) time.Time {
 	t, err := time.Parse(time.DateTime, s)
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Println(err.Error())
 	}
 	return t
 }
