@@ -142,3 +142,43 @@ func GetUserData(username string) User {
 	}
 	return u
 }
+
+func GetAnalyticsData(username string) Analytics {
+	var a Analytics
+	a.Username = username
+	database, err := sql.Open("sqlite3", "./users.db")
+	defer database.Close()
+	if err != nil {
+		log.Println(err.Error())
+	}
+	//Getting total income and expense
+	rows, err := database.Query(fmt.Sprintf("SELECT amount FROM transactions JOIN users ON users.user_id = transactions.user_id WHERE username = '%s'", username))
+	defer rows.Close()
+	var t float64
+	for rows.Next() {
+		rows.Scan(&t)
+		if t > 0 {
+			a.Income += t
+		} else {
+			a.Expenditure += t
+		}
+	}
+	//Calculating by category
+	rows, err = database.Query(fmt.Sprintf("SELECT category,  SUM(amount) FROM transactions JOIN users ON users.user_id = transactions.user_id GROUP BY category HAVING username = '%s' ORDER BY SUM(amount) DESC", username))
+	if err != nil {
+		log.Println(err.Error())
+	}
+	i := 0
+	for rows.Next() {
+		var category string
+		var amount float64
+		rows.Scan(&category, &amount)
+		a.CategoriesExpense[i] = amount
+		a.CategoriesNames[i] = category
+		if i < 4 {
+			i++
+		}
+
+	}
+	return a
+}

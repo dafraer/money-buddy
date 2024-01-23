@@ -27,7 +27,9 @@ type Transaction struct {
 }
 
 type Analytics struct {
-	Username    string
-	Income      float64
-	Expenditure float64
+	Username          string
+	Income            float64
+	Expenditure       float64
+	CategoriesNames   [5]string
+	CategoriesExpense [5]float64
 }

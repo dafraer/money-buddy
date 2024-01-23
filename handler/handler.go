@@ -242,15 +242,7 @@ func expenseAnalyticsHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err.Error())
 	}
-	var temp db.Analytics
-	temp.Username = current.Username
-	for _, v := range current.Transactions {
-		if v.Amount > 0 {
-			temp.Income++
-		} else {
-			temp.Expenditure++
-		}
-	}
+	temp := db.GetAnalyticsData(current.Username)
 	tmpl.Execute(w, temp)
 }
 
