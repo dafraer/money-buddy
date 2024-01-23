@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
     <title>Money Buddy</title>
     <style>
 
@@ -299,7 +300,7 @@
             })
 
             // check that everything is working
-            
+
             .then(response => {      
                 if (!response.ok) {
                     throw new Error('Failed to update data');
@@ -340,7 +341,7 @@
         // banana math
         // var raw_banana = {{.Expenditure}};
         // raw_banana = 900 / 0.5; // total expenses
-        document.getElementById('bananamath').innerHTML = raw_banana;
+        // document.getElementById('bananamath').innerHTML = raw_banana;
 
     </script>
 </body>
