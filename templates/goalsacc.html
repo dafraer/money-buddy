@@ -164,9 +164,9 @@
 
         <div class="tracker">
             <h2 id="title">Your Piggy Bank</h2>
-            <p>Target Amount: <span id="targetAmount">{{.PiggyBank.TargetAmount}}$</span></p>
+            <p>Target Amount: <span id="targetAmount">{{.PiggyBank.TargetAmount}}{{.Currency}}</span></p>
             <p>Target Date: <span id="targetDate">{{.PiggyBank.TargetDate}}</span></p>
-            <p>Balance: <span id="balance">{{.PiggyBank.Balance}}$</span></p>
+            <p>Balance: <span id="balance">{{.PiggyBank.Balance}}{{.Currency}}</span></p>
         </div>
 
         <div class="form-container">
@@ -181,7 +181,8 @@
                 <input type="text" id="newAmount" name="newAmount">
                 <label for="newDate">New Target Date:</label>
                 <input type="text" id="newDate" name="newDate" >
-                <p><br>Date has to be in a 01/02 03:04:05PM '06 -0700 format (January 2, 15:04:05, 2006, in time zone seven hours west of GMT)</p>
+                <p><br>Date has to be in a YYYY-MM-DD format</p>
+                <!--01/02 03:04:05PM '06 -0700 format (January 2, 15:04:05, 2006, in time zone seven hours west of GMT)-->
                 <button type="submit">Save changes</button>
 
             </form> <!--form for go closes-->
