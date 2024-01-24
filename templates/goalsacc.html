@@ -4,156 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="support/style.css">
+    <script src="support/jquery.js"></script>
+    <script src="support/main.js"></script>
     <title>Money Buddy</title>
-    <style>
-        body {
-            background-color: #ffffff;
-            color: #76453B;
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        header {
-            background-color: #EEB76B	;
-            padding: 1%;
-            text-align: center;
-            position: relative;
-        }    
-
-        header a {
-            text-decoration: none;
-            color: #000000;
-        }
-
-        #logo {
-            position: absolute;
-            left: 1%;
-            top: 5%;
-            max-width: 6vw;
-            max-height: 6vw;
-        }
-        
-        #signbtn {
-            position: absolute;
-            right: 2.5%;
-            top: 16%;
-            text-decoration: none;
-            background-color: #ffffff;
-            color: #310B0B;
-            font-size: 1vw;
-            padding: 0.8% 1%;
-            width: 4vw;
-            height: 1vw;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 2vw;
-            background-color: #ffffff;
-        }
-
-        nav {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            margin-top: 3%;
-        }
-
-        nav a {
-            text-decoration: none;
-            color: #ffffff;
-            background-color: #310B0B;
-            font-size: 1.1vw;
-            padding: 0.9% 1%;
-            width: 10vw;
-            height: 1vw;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 1vw;
-        }
-
-        nav a.bold {font-weight: bold;
-            font-size: 1.1vw;
-            background-color: #ffffff;
-            color: #310B0B;}
-
-        #homebtn {
-            text-decoration: none;
-            padding: 0.9% 1%;
-            width: 9.4vw;
-            height: 1vw;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 1vw;
-        }
-
-        #hello {
-            color: #310B0B;
-        }
-
-        main {
-            font-size: 1.3vw;
-            padding: 2%;
-            text-align: justify;
-        }
-
-        #title {
-            text-align: center;
-            position: relative;
-            height: 3vw;
-            color: #310B0C;
-        }
-
-        .progress-bar {
-            position: absolute;
-            padding: 35px 100px;
-            top: 250px;
-            right: 210px;
-        }
-
-        #bar {
-            position: absolute;
-            padding: 40px 100px;
-            top:-35px;
-            right: 45px;
-        }
-
-        .form-container {
-            text-align: justify;
-        }
-
-        footer {
-            font-size: 1vw;
-            background-color: #fff;
-            color: #310B0B;
-            padding: 2%;
-            text-align: center;
-            position: relative;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-    </style>
 </head>
 
 <body>
-    <header>
-        <a href="/main"> <img id="logo" src="images/pfp2.png" alt="Money Buddy Logo"> </a>
-        <a href="/main"> <h1 id="hello">Hello, {{.Username}}!</h1> </a>
-        <a id="signbtn" href="/logout">Sign Out</a>
-        <nav>
-            <a id="homebtn" href="/main">Home</a>
-            <a href="/goals" class="bold">Financial Goals</a>
-            <a href="/expenses">Budget Tracking</a>
-            <a href="/analytics">Expense Analytics</a>
-        </nav>
-    </header>
+    
+    <div id="includedheader"></div>
 
     <main>
 
@@ -189,10 +48,8 @@
         </div>
     </main>
 
-    <footer>
-        <p>Contact us at: kdnuriev@gmail.com</p>
-        <p>&copy; 2024 Money Buddy. All rights reserved.</p>
-    </footer>
+    <div id="includedfooter"></div>
+
 </body>
 
 </html>
