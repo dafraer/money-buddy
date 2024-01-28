@@ -4,9 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="support/style.css">
-    <script src="support/jquery.js"></script>
-    <script src="support/main.js"></script>
+    <link rel="stylesheet" href="support/css/main.css">
+    <link rel="stylesheet" href="support/css/expenses.css">
+    <script src="support/js/jquery.js"></script>
+    <script src="support/js/main.js"></script>
+    <script src="support/js/expenses.js"></script>
     <title>Money Buddy</title>
     
 </head>
@@ -17,7 +19,26 @@
 
     <main>
         <h2 id="title">Budget Tracking</h2>
-        <p>Budget tracking info displayed here.</p>
+
+        <div class="tracker_buttons">
+
+            <button id="open_plusModal" class="expenses_btn">+</button>
+                <div id="plusModal" class="modal">
+                    <div class="modal-content">
+                        <span id="close_plusModal">&times;</span>
+                        <p>Some text in the plus modal..</p>
+                      </div>
+                </div>
+
+            <button id="open_minModal" class="expenses_btn">-</button>
+                <div id="minModal" class="modal">
+                    <div class="modal-content">
+                        <span id="close_minModal">&times;</span>
+                        <p>Some text in the min modal..</p>
+                      </div>
+                </div>
+        </div>
+
     </main>
 
     <div id="includedfooter"></div>
