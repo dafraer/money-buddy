@@ -2,10 +2,12 @@ package handler
 
 import (
 	"MoneyBuddy/db"
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"log"
 	"net/http"
+	"path"
 	"strconv"
 	"time"
 	"unicode"
@@ -21,8 +23,10 @@ var current db.User
 func HandleRequest() {
 	store = sessions.NewCookieStore([]byte("super-secret"))
 	current = db.User{}
-	//http.Handle("/pfp.jpg", http.FileServer(http.Dir("templates/images")))
-	http.HandleFunc("/images/pfp2.png", imageHandler)
+	http.HandleFunc("/images/", imageHandler)
+	http.HandleFunc("/support/", headerFooterHandler)
+	http.HandleFunc("/support/css/", cssHandler)
+	http.HandleFunc("/support/js/", jsHandler)
 	http.HandleFunc("/main", homePageHandler)
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/register", registerHandler)
@@ -31,13 +35,40 @@ func HandleRequest() {
 	http.HandleFunc("/expenses", expenseTrackingHandler)
 	http.HandleFunc("/loginauth", loginAuthHandler)
 	http.HandleFunc("/analytics", expenseAnalyticsHandler)
+	http.HandleFunc("/getuserdata", getUserDataHandler)
 	http.HandleFunc("/logout", logoutHandler)
 	http.HandleFunc("/goalssave", financialGoalsSaveHandler)
+	http.HandleFunc("/postuserdata", updateUserDataHandler)
+	http.HandleFunc("/addtransaction", addTransactionHandler)
 	http.ListenAndServe(":8000", context.ClearHandler(http.DefaultServeMux))
 }
 
 func imageHandler(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "templates/images/pfp2.png")
+	filePath := r.URL.Path
+	filePath = path.Base(filePath)
+	fullPath := path.Join("templates/images/", filePath)
+	http.ServeFile(w, r, fullPath)
+}
+
+func jsHandler(w http.ResponseWriter, r *http.Request) {
+	filePath := r.URL.Path
+	filePath = path.Base(filePath)
+	fullPath := path.Join("templates/support/js/", filePath)
+	http.ServeFile(w, r, fullPath)
+}
+
+func cssHandler(w http.ResponseWriter, r *http.Request) {
+	filePath := r.URL.Path
+	filePath = path.Base(filePath)
+	fullPath := path.Join("templates/support/css/", filePath)
+	http.ServeFile(w, r, fullPath)
+}
+
+func headerFooterHandler(w http.ResponseWriter, r *http.Request) {
+	filePath := r.URL.Path
+	filePath = path.Base(filePath)
+	fullPath := path.Join("templates/support/", filePath)
+	http.ServeFile(w, r, fullPath)
 }
 
 func homePageHandler(w http.ResponseWriter, r *http.Request) {
@@ -75,6 +106,7 @@ func loginAuthHandler(w http.ResponseWriter, r *http.Request) {
 	if correct == true {
 		//Opening current user data
 		current = db.GetUserData(username)
+		current.Analytics = db.GetAnalyticsData(username)
 		//Creating login session
 		session, err := store.Get(r, "session")
 		if err != nil {
@@ -205,6 +237,7 @@ func financialGoalsSaveHandler(w http.ResponseWriter, r *http.Request) {
 	if err == nil {
 		current.PiggyBank.TargetDate = newDateString
 	}
+	current.Analytics = db.GetAnalyticsData(current.Username)
 	current.UpdateUserData()
 	http.Redirect(w, r, "/goals", http.StatusSeeOther)
 }
@@ -242,8 +275,35 @@ func expenseAnalyticsHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err.Error())
 	}
-	temp := db.GetAnalyticsData(current.Username)
-	tmpl.Execute(w, temp)
+	tmpl.Execute(w, nil)
+}
+
+func getUserDataHandler(w http.ResponseWriter, r *http.Request) {
+	jsonData, err := json.Marshal(current)
+	if err != nil {
+		log.Println(err.Error())
+	}
+	w.Write(jsonData)
+}
+
+func updateUserDataHandler(w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&current)
+	current.UpdateUserData()
+	if err != nil {
+		log.Println(err.Error())
+	}
+}
+
+func addTransactionHandler(w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+	t := db.Transaction{}
+	err := decoder.Decode(&t)
+	current.Add(&t, 1)
+	current.UpdateUserData()
+	if err != nil {
+		log.Println(err.Error())
+	}
 }
 
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
