@@ -9,6 +9,7 @@ type User struct {
 	Balance      float64
 	Transactions []Transaction
 	PiggyBank    PiggyBank
+	Analytics    Analytics
 }
 
 type PiggyBank struct {
@@ -30,11 +31,7 @@ type Analytics struct {
 	Username    string
 	Income      float64
 	Expenditure float64
-	Category1   Category
-	Category2   Category
-	Category3   Category
-	Category4   Category
-	Category5   Category
+	Categories  [5]Category
 }
 
 type Category struct {
