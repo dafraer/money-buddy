@@ -21,10 +21,28 @@
         <h2 id="title">Expense Analytics</h2>
 
         <!--pie chart-->
-        <div class="pie-chart"></div>
+        <div class="pie-chart-container">
+
+            <div class="pie-chart"></div>
+            
+            <div id="legend"> 
+                <h3 id="ch3">Pie Chart Legend</h3>
+                <p><span id="name0"> </span>: <span id="amount0"></span>$</p>
+                <p><span id="name1"> </span>: <span id="amount1"></span>$</p>
+                <p><span id="name2"> </span>: <span id="amount2"></span>$</p>
+                <p><span id="name3"> </span>: <span id="amount3"></span>$</p>
+                <p><span id="other">Other: </span> <span id="amountother"></span>$</p>
+            </div>
+
+        </div>
         
         <!--Bar Chart-->
         <div class="barchart-container">
+            <button onclick="toggleVisibility()" id="tglbtn"><b>Bar Chart ⌄</b></button>
+            <div class="barchart hidden" id="hiddenText">
+                <p>barchart will appear here</p>
+            </div>
+        </div>
             <!--totals-->
             <div class="stats">
                 <p><b>Total Income: </b><span id="totalInc"></span>$</p>
@@ -33,23 +51,10 @@
                 <span id="info_hover"><b>why?</b></span>
                 <span id="hidden_info"><i>if 1 banana = 0.5$</i></span>
             </div>
-            
-            <button onclick="toggleVisibility()" id="tglbtn"><b>Bar Chart ⌄</b></button>
-            <div class="barchart hidden" id="hiddenText">
-                <p>barchart will appear here</p>
-            </div>
-        
-        <div id="legend"> 
-            <h3 id="ch3">Pie Chart Legend</h3>
-            <p><span id="name0"> </span>: <span id="amount0"></span>$</p>
-            <p><span id="name1"> </span>: <span id="amount1"></span>$</p>
-            <p><span id="name2"> </span>: <span id="amount2"></span>$</p>
-            <p><span id="name3"> </span>: <span id="amount3"></span>$</p>
-            <p><span id="other">Other: </span> <span id="amountother"></span>$</p>
-        </div>
     </main>
 
     <div id="includedfooter"></div>
+
     <script>
         xhr = new XMLHttpRequest();
         xhr.open('GET', 'http://localhost:8000/getuserdata', true);
