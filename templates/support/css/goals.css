@@ -1,3 +1,9 @@
+#goalsbtn {
+  font-weight: bold;
+  font-size: 1.1vw;
+  background-color: #ffffff;
+  color: #310B0B;}
+
 .banana-image-container {
     position: absolute;
     width: 300px;

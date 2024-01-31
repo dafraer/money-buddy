@@ -1,3 +1,9 @@
+#trackbtn {
+  font-weight: bold;
+  font-size: 1.1vw;
+  background-color: #ffffff;
+  color: #310B0B;}
+
 .tracker_buttons {
   display: flex;
   justify-content: center;
