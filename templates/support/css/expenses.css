@@ -1,38 +1,87 @@
-/* The Modal (background) */
+.tracker_buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 15vh;
+}
+
+#open_plusModal {
+  background-color: #fff;
+  color: #43766C;
+  display: inline-block;
+  font-size: 2em;
+  width: 5vw;
+  height: 5vw;
+  border: 0.2vw solid #43766C;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-right: 3vw;
+  transition: all 0.3s ease;
+}
+
+#open_plusModal:hover {
+  background-color: #43766C;
+  color: #fff;
+}
+
+#open_minModal {
+  background-color: #fff;
+  color: #BF3131;
+  display: inline-block;
+  font-size: 2em;
+  width: 5vw;
+  height: 5vw;
+  border: 0.2vw solid #BF3131;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-left: 3vw;
+  transition: all 0.3s ease;
+}
+
+#open_minModal:hover {
+  background-color: #BF3131;
+  color: #fff;
+}
+
 .modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-  }
-  
-  /* Modal Content */
-  .modal-content {
-    background-color: #fefefe;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-  }
-  
-  /* The Close Button */
-  .close.modal {
-    color: #aaaaaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-  }
-  
-  .close.modal:hover,
-  .close.modal:focus {
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
-  }
+  display: none; 
+  position: fixed;
+  z-index: 1; 
+  left: 0;
+  top: 0;
+  width: 100%; 
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+  text-align: center;
+}
+
+.modal-content {
+  display: inline-block;
+  background-color: #fefefe;
+  margin-top: 10%;
+  border-radius: 1vw;
+  padding: 3%;
+  border: 5% solid #888;
+  width: 80%;
+  max-width: 30%; 
+  box-shadow: 0 4% 8%  rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.close {
+  color: red;
+  float: right;
+  font-size: 1.5vw;
+  font-weight: bold;
+  position: absolute;
+  top: 10%;
+  right: 5%;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
