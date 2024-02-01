@@ -1,8 +1,8 @@
 :root {
-    --top1CSS: 0%; 
+    --top0CSS: 0%; 
+    --top1CSS: 0%;
     --top2CSS: 0%;
     --top3CSS: 0%;
-    --top4CSS: 0%;
     --otherCSS: 0%;
     --fullCSS: 0%;
 }
@@ -47,13 +47,15 @@ text-align:end;
     height: 20vw;
     border-radius: 50%;
     background: conic-gradient(
-        #43766C 0% var(--fullCSS)
-       /* #E2703A 0% var(--foodCSS),
-        #9C3D54 var(--foodCSS) var(--billsCSS),
-        #351F39 var(--billsCSS) 100% */
-        
-    );
+        #03506F 0% var(--otherCSS),
+        #ec9c9d var(--otherCSS) var(--top0CSS),
+        #fcc983 var(--top0CSS) var(--top1CSS),
+        #C7DCA7 var(--top1CSS) var(--top2CSS),
+        #89B9AD var(--top2CSS) var(--top3CSS)
+        );
+    
 }
+
 
 #legend {
     position: absolute;
@@ -62,9 +64,9 @@ text-align:end;
     transform: translateX(50%);
     width: 20vw;
 }
-
+/* 
 #ch3 { text-align: center;}
-/* new categories should appear here as well */
+new categories should appear here as well 
 #food_c {color: #00B28B;font-weight: bold;}
 #bills_c {color: #FF6347;font-weight: bold;}
 #transport_c {color: blueviolet;font-weight: bold;}

@@ -27,12 +27,13 @@
             
             <div id="legend"> 
                 <h3 id="ch3">Pie Chart Legend</h3>
-                <p><span id="name0"> </span>: <span id="amount0"></span>$</p>
-                <p><span id="name1"> </span>: <span id="amount1"></span>$</p>
-                <p><span id="name2"> </span>: <span id="amount2"></span>$</p>
-                <p><span id="name3"> </span>: <span id="amount3"></span>$</p>
-                <p><span id="other">Other: </span> <span id="amountother"></span>$</p>
+                <p id="category0"><span id="name0"> </span>: <span id="amount0"></span>$</p>
+                <p id="category1"><span id="name1"> </span>: <span id="amount1"></span>$</p>
+                <p id="category2"><span id="name2"> </span>: <span id="amount2"></span>$</p>
+                <p id="category3"><span id="name3"> </span>: <span id="amount3"></span>$</p>
+                <p id="other">Other: <span id="amountother"></span>$</p>
             </div>
+            
 
         </div>
         
@@ -56,21 +57,7 @@
     <div id="includedfooter"></div>
 
     <script>
-        xhr = new XMLHttpRequest();
-        xhr.open('GET', 'http://localhost:8000/getuserdata', true);
-        xhr.onload = function() {
-            if (this.status == 200) {
-                var u = JSON.parse(this.responseText);
-                u.Analytics.Income == null ? document.getElementById("totalInc").innerHTML = 0 : document.getElementById("totalInc").innerHTML = u.Analytics.Income;
-                u.Analytics.Expenditure == null ? document.getElementById("totalSpent").innerHTML = 0 : document.getElementById("totalSpent").innerHTML = u.Analytics.Expenditure;
-                for (let i = 0; i < 4; i++) {
-                    document.getElementById("name"+i).innerHTML = u.Analytics.Categories[i].Name;
-                    u.Analytics.Categories[i].Amount == null ? document.getElementById("amount"+i).innerHTML = 0 : document.getElementById("amount"+i).innerHTML = u.Analytics.Categories[i].Amount;
-                }
-                u.Analytics.Categories[4].Amount == null ? document.getElementById("amountother").innerHTML = 0 : document.getElementById("amountother").innerHTML = u.Analytics.Categories[4].Amount;
-            }
-        }
-        xhr.send();
+        
     </script>
 </body>
 </html>
