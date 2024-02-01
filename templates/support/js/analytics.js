@@ -31,7 +31,6 @@ document.addEventListener('DOMContentLoaded', function () {
             var amount3 = parseFloat(document.getElementById("amount3").textContent);
             var other = parseFloat(document.getElementById("amountother").textContent);
             var totalSpent = parseFloat(document.getElementById("totalSpent").textContent);
-
             
             var other_f = ((other / totalSpent) * 100) + '%';
             var amount0_f = ((amount0 / totalSpent) * 100) + 0 + '%';
@@ -45,23 +44,11 @@ document.addEventListener('DOMContentLoaded', function () {
             document.documentElement.style.setProperty('--top1CSS', amount1_f);
             document.documentElement.style.setProperty('--top2CSS', amount2_f);
             document.documentElement.style.setProperty('--top3CSS', amount3_f);
+
+            // banana math
+            bananamath = totalSpent / 0.6;
+            document.getElementById('bananamath').innerHTML = bananamath;
         }
     }
     xhr.send();
-});
-
-
-
-
-    // pie always full (even wuthout expenses)
-    /*var full = 100;
-    let full1 = String(full) + '%';
-    document.documentElement.style.setProperty('--fullCSS', full1); */
-
-    /* if ({{.Expenditure}} == null) {
-        document.documentElement.style.setProperty('--fullCSS', full);}   */
-
-    // banana math
-    // var raw_banana = {{.Expenditure}};
-    // raw_banana = 900 / 0.5; // total expenses
-    // document.getElementById('bananamath').innerHTML = raw_banana;
+}); 
