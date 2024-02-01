@@ -9,14 +9,13 @@
 <body>
     <header>
         <a href="/main"> <img id="logo" src="images/pfp2.png" alt="Money Buddy Logo"> </a>
-        <a href="/login"> <h1 id="hello">Sign In to continue</h1> </a>
-        <a id="signbtn" href="/login">Sign In</a>
+        <a href="/main"> <h1 id="hello">Hello, {{.Username}}!</h1> </a>
+        <a id="signbtn" href="/logout">Sign Out</a>
         <nav>
             <a id="homebtn" href="/main">Home</a>
             <a id="goalsbtn" href="/goals">Financial Goals</a>
             <a id="trackbtn" href="/expenses">Budget Tracking</a>
             <a id="analyticsbtn" href="/analytics">Expense Analytics</a>
-
         </nav>
     </header>
 </body>

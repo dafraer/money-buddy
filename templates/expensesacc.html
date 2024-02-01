@@ -17,101 +17,58 @@
 
 <body>
 
-    <div id="includedheader"></div>
+    <div id="includedheaderacc"></div>
 
     <main>
         <h2 id="title">Budget Tracking</h2>
     
         <div class="tracker_buttons"> 
-            <button id="open_plusModal" class="expenses_btn">+</button>
+            <button id="open_plusModal" class="expenses_btn">&#43</button>
             <div id="plusModal" class="modal">
                 <div class="modal-content">
-                    <span id="close_plusModal">&times;</span>
                     <form id="PostForm1">
-                        Amount: <input type="number" id="amount1">
-                        Category: <input type="text" id="category1">
+                        <p>Amount: <input type="number" id="amount1"></p>
+                        <p>Category: <input type="text" id="category1"></p>
                         <p><input type="submit" value="Add" id="add"></p>
                     </form>
+                    <span class="close" id="close_plusModal">&times;</span>
                 </div>
             </div>
     
-            <button id="open_minModal" class="expenses_btn">-</button>
+            <button id="open_minModal" class="expenses_btn">&#8722</button>
             <div id="minModal" class="modal">
                 <div class="modal-content">
-                    <span id="close_minModal">&times;</span>
+                    <span class="close" id="close_minModal">&times;</span>
                     <form id="PostForm2">
-                        Amount: <input type="number" id="amount2">
-                        Category: <input type="text" id="category2">
+                        <p>Amount: <input type="number" id="amount2"></p>
+                        <p>Category: <input type="text" id="category2"></p>
                         <p><input type="submit" value="Add" id="subtract"></p>
                     </form>
+                    <span class="close" id="close_minModal">&times;</span>
                 </div>
             </div>
         </div>
-        <br>
-        <p>Transactions</p>
-        <table> 
-            <tr> <th>Transaction time</th> <th>Amount</th> <th>Category</th> </tr>
-            <div id="transact"></div>
-        </table>
-        <script>
-            Get();
-            document.getElementById("PostForm1").addEventListener("submit", function (event) {
-                event.preventDefault();
-                Add(1);
-            });
-    
-            document.getElementById("PostForm2").addEventListener("submit", function (event) {
-                event.preventDefault();
-                Add(-1);
-            });
-    
-            function Get(callback) {
-                var xhr = new XMLHttpRequest();
-                xhr.open('GET', 'http://localhost:8000/getuserdata', true);
-                xhr.onload = function () {
-                    if (this.status == 200) {
-                        var u = JSON.parse(this.responseText);
-                        var output = '';
-                        for (let i = 0; i < u.Transactions.length; i++) {
-                            output += '<tr> <td>' + u.Transactions[i].TransactionTime + '</td> <td>' + u.Transactions[i].Amount + '</td> <td>' + u.Transactions[i].Category + ' </td> </tr><br>';  
-                        }
-                        document.getElementById("transact").innerHTML = output;
-                        callback(u);
-
-                    }
-                };
-                xhr.send();
-            }
+        
+        <div class="transactions-container">
             
-            function Add(value) {
-                    if (value == 1) {
-                        var category = document.getElementById("category1").value;
-                        var amount = document.getElementById("amount1").value;
-                    } else {
-                        var category = document.getElementById("category2").value;
-                        var amount = document.getElementById("amount2").value;
-                    }
-                    var transaction = {
-                        TransactionTime: getCurrentTime(),
-                        Amount: amount * value,
-                        Category: category
-                    };
-                    var xhr = new XMLHttpRequest();
-                    xhr.open('POST', 'http://localhost:8000/addtransaction', true);
-                    xhr.setRequestHeader('Content-Type', 'application/json');
-                    xhr.send(JSON.stringify(transaction));
-                    Get()
-            }
-    
-            function getCurrentTime() {
-                return new Date().toISOString();
-            }
-        </script>
+            <b>Transactions</b>
+
+            <table id="transact">
+                <tr>
+                  <th>Date</th>
+                  <th>Amount</th>
+                  <th>Category</th>
+                </tr>
+              </table>
+              
+        </div>
+            
     </main>
-    
 
     <div id="includedfooter"></div>
-
+    <script>
+        
+    </script>
 </body>
 
 </html>

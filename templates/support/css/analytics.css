@@ -7,6 +7,12 @@
     --fullCSS: 0%;
 }
 
+#analyticsbtn {
+    font-weight: bold;
+    font-size: 1.1vw;
+    background-color: #ffffff;
+    color: #310B0B;}
+
 .stats {
     position: absolute;
     top: 33%;

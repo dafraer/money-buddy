@@ -1,3 +1,11 @@
+/* buttons */
+
+#trackbtn {
+  font-weight: bold;
+  font-size: 1.1vw;
+  background-color: #ffffff;
+  color: #310B0B;}
+
 .tracker_buttons {
   display: flex;
   justify-content: center;
@@ -84,4 +92,34 @@
   color: #000;
   text-decoration: none;
   cursor: pointer;
+}
+
+/* transactions table */
+
+.transactions-container {
+  margin-top: 1.5vw;
+}
+
+#transact {
+  width: 50%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+#transact th, #transact td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+#transact th {
+  background-color: #f2f2f2;
+}
+
+#transact tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+#transact tr:hover {
+  background-color: #ddd;
 }
