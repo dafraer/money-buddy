@@ -1,45 +1,62 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // list of variables /* new categories should appear here as well */
-    // var food_0 = 300;
-    // var bills_0 = 300;
-    // var transport_0 = 300;
-    // var total = 900;
 
-    // manipulations for right pie chart (with every variable) /* new categories should appear here as well */
+    // api request function
+    xhr = new XMLHttpRequest();
+    xhr.open('GET', 'http://localhost:8000/getuserdata', true);
+    xhr.onload = function () {
+        if (this.status == 200) {
+            var u = JSON.parse(this.responseText);
+            u.Analytics.Income == null ? document.getElementById("totalInc").innerHTML = 0 : document.getElementById("totalInc").innerHTML = u.Analytics.Income;
+            u.Analytics.Expenditure == null ? document.getElementById("totalSpent").innerHTML = 0 : document.getElementById("totalSpent").innerHTML = u.Analytics.Expenditure;
+            for (let i = 0; i < 4; i++) {
+                document.getElementById("name" + i).innerHTML = u.Analytics.Categories[i].Name;
+                u.Analytics.Categories[i].Amount == null ? document.getElementById("amount" + i).innerHTML = 0 : document.getElementById("amount" + i).innerHTML = u.Analytics.Categories[i].Amount;
+                // Hide category if amount is zero
+                if (u.Analytics.Categories[i].Amount == 0) {
+                    document.getElementById("category" + i).style.display = "none";
+                }
+            }
+            u.Analytics.Categories[4].Amount == null ? document.getElementById("amountother").innerHTML = 0 : document.getElementById("amountother").innerHTML = u.Analytics.Categories[4].Amount;
 
-    /*  var top1_1 = (({{.Category1.Name}}/ total) * 100) + 0; let top1_f = String(top1_1) + '%';
-    var top2_1 = (({{.Category2.Name}}/ total) * 100) + top1_1; let top2_f = String(top2_1) + '%';
-    var top3_1 = (({{.Category3.Name}}/ total) * 100) + top2_1; let top3_f = String(top3_1) + '%';
-    var top4_1 = (({{.Category4.Name}}/ total) * 100) + top3_1; let top4_f = String(top4_1) + '%';
-    var other_1 = ((other/ total) * 100) + top4_1; let other_f = String(other_1) + '%';
-    */ 
-    // func that changes css variables /* new categories should appear here as well */
-    /* document.documentElement.style.setProperty('--top1CSS', top1_f);
-    document.documentElement.style.setProperty('--top2CSS', top2_f);
-    document.documentElement.style.setProperty('--top3CSS', top3_f);
-    document.documentElement.style.setProperty('--top4CSS', top4_f);
-    document.documentElement.style.setProperty('--otherCSS', other_f); */
+            // Hide 'Other' category if amount is zero
+            if (u.Analytics.Categories[4].Amount == 0) {
+                document.getElementById("other").style.display = "none";
+                document.getElementById("amountother").style.display = "none";
+            }
 
-    // pie always full (even wuthout expenses)
-    var full = 100;
-    let full1 = String(full) + '%';
-    document.documentElement.style.setProperty('--fullCSS', full1);
+            // List of variables and manipulations
+            var amount0 = parseFloat(document.getElementById("amount0").textContent);
+            var amount1 = parseFloat(document.getElementById("amount1").textContent);
+            var amount2 = parseFloat(document.getElementById("amount2").textContent);
+            var amount3 = parseFloat(document.getElementById("amount3").textContent);
+            var other = parseFloat(document.getElementById("amountother").textContent);
+            var totalSpent = parseFloat(document.getElementById("totalSpent").textContent);
+            
+            var other_f = ((other / totalSpent) * 100) + '%';
+            var amount0_f = ((amount0 / totalSpent) * 100) + 0 + '%';
+            var amount1_f = ((amount1 / totalSpent) * 100) + ((amount0 / totalSpent) * 100) + '%';
+            var amount2_f = ((amount2 / totalSpent) * 100) + ((amount1 / totalSpent) * 100) + ((amount0 / totalSpent) * 100) + '%';
+            var amount3_f = ((amount3 / totalSpent) * 100) + ((amount2 / totalSpent) * 100) + ((amount1 / totalSpent) * 100) + ((amount0 / totalSpent) * 100) + '%';
 
-    /* if ({{.Expenditure}} == null) {
-        document.documentElement.style.setProperty('--fullCSS', full);}   */
-
-    // banana math
-    // var raw_banana = {{.Expenditure}};
-    // raw_banana = 900 / 0.5; // total expenses
-    // document.getElementById('bananamath').innerHTML = raw_banana;
-
-    /* how categories are working?
-    let see according to category food:
-    food_0 = amount of $ spend on that particular category
-    food_1 = this amount in percentage (food_0 / total) * 100% - pay attention, for work of the pie chart it's working a bit different for other categories
-    food_f = f stands for final. food_f is a string version of food_1 with % sign. it's neccessary for pie chart to work
-    food_c = id to make text bold and stylish :)
-    -foodCSS = CSS variable; equal to food_f, but it's neccessary for pie chart to work
-    thx guys ^)--> */
-
-});
+            // pie always full (even wuthout expenses)
+            var full = 0;
+            if (totalSpent == '0') {
+                full = 100 + '%';
+                document.documentElement.style.setProperty('--fullCSS', full);
+                document.getElementById("noexpenses").innerHTML = "pie chart will change when you'll start tracking expenses!";
+                // noexpenses
+             } 
+            else {
+                document.documentElement.style.setProperty('--otherCSS', other_f);
+                document.documentElement.style.setProperty('--top0CSS', amount0_f);
+                document.documentElement.style.setProperty('--top1CSS', amount1_f);
+                document.documentElement.style.setProperty('--top2CSS', amount2_f);
+                document.documentElement.style.setProperty('--top3CSS', amount3_f);
+            }
+            // banana math
+            bananamath = Math.round(totalSpent / 0.6);
+            document.getElementById('bananamath').innerHTML = bananamath;
+        }
+    }
+    xhr.send();
+}); 
