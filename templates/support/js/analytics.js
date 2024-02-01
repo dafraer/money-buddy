@@ -37,16 +37,24 @@ document.addEventListener('DOMContentLoaded', function () {
             var amount1_f = ((amount1 / totalSpent) * 100) + ((amount0 / totalSpent) * 100) + '%';
             var amount2_f = ((amount2 / totalSpent) * 100) + ((amount1 / totalSpent) * 100) + ((amount0 / totalSpent) * 100) + '%';
             var amount3_f = ((amount3 / totalSpent) * 100) + ((amount2 / totalSpent) * 100) + ((amount1 / totalSpent) * 100) + ((amount0 / totalSpent) * 100) + '%';
-            // var other_f = ((other / totalSpent) * 100) + ((amount3 / totalSpent) * 100) + ((amount2 / totalSpent) * 100) + ((amount1 / totalSpent) * 100) + ((amount0 / totalSpent) * 100) + '%';
 
-            document.documentElement.style.setProperty('--otherCSS', other_f);
-            document.documentElement.style.setProperty('--top0CSS', amount0_f);
-            document.documentElement.style.setProperty('--top1CSS', amount1_f);
-            document.documentElement.style.setProperty('--top2CSS', amount2_f);
-            document.documentElement.style.setProperty('--top3CSS', amount3_f);
-
+            // pie always full (even wuthout expenses)
+            var full = 0;
+            if (totalSpent == '0') {
+                full = 100 + '%';
+                document.documentElement.style.setProperty('--fullCSS', full);
+                document.getElementById("noexpenses").innerHTML = "pie chart will change when you'll start tracking expenses!";
+                // noexpenses
+             } 
+            else {
+                document.documentElement.style.setProperty('--otherCSS', other_f);
+                document.documentElement.style.setProperty('--top0CSS', amount0_f);
+                document.documentElement.style.setProperty('--top1CSS', amount1_f);
+                document.documentElement.style.setProperty('--top2CSS', amount2_f);
+                document.documentElement.style.setProperty('--top3CSS', amount3_f);
+            }
             // banana math
-            bananamath = totalSpent / 0.6;
+            bananamath = Math.round(totalSpent / 0.6);
             document.getElementById('bananamath').innerHTML = bananamath;
         }
     }

@@ -47,10 +47,11 @@ text-align:end;
     height: 20vw;
     border-radius: 50%;
     background: conic-gradient(
+        #ec9c9d 0% var(--fullCSS),
         #03506F 0% var(--otherCSS),
         #ec9c9d var(--otherCSS) var(--top0CSS),
         #fcc983 var(--top0CSS) var(--top1CSS),
-        #C7DCA7 var(--top1CSS) var(--top2CSS),
+        #bfcea9 var(--top1CSS) var(--top2CSS),
         #89B9AD var(--top2CSS) var(--top3CSS)
         );
     
@@ -64,9 +65,10 @@ text-align:end;
     transform: translateX(50%);
     width: 20vw;
 }
-/* 
-#ch3 { text-align: center;}
-new categories should appear here as well 
-#food_c {color: #00B28B;font-weight: bold;}
-#bills_c {color: #FF6347;font-weight: bold;}
-#transport_c {color: blueviolet;font-weight: bold;}
+
+#h3 { text-align: center;}
+#other {color: #00B28B;font-weight: bold;}
+#name0 {color: #ec9c9d;font-weight: bold;}
+#name1 {color: #fcc983;font-weight: bold;}
+#name2 {color: #bfcea9;font-weight: bold;}
+#name3 {color: #89B9AD;font-weight: bold;}
