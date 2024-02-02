@@ -124,9 +124,11 @@ func loginAuthHandler(w http.ResponseWriter, r *http.Request) {
 	correct := db.Authentication(username, password)
 	//if data is valid proceed
 	if correct == true {
+
 		//Opening current user data
 		current = db.GetUserData(username)
 		current.Analytics = db.GetAnalyticsData(username)
+
 		//Creating login session
 		session, err := store.Get(r, "session")
 		if err != nil {
@@ -134,11 +136,11 @@ func loginAuthHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		session.Values["username"] = username
 		session.Save(r, w)
-		tmpl, err := template.ParseFiles("templates/loginsuccess.html")
+		tmpl, err := template.ParseFiles("templates/homepageacc.html")
 		if err != nil {
 			log.Println(err.Error())
 		}
-		tmpl.Execute(w, nil)
+		tmpl.Execute(w, current)
 	} else {
 		//Else notify user that data is not valid
 		tmpl, err := template.ParseFiles("templates/login.html")
