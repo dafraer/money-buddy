@@ -184,14 +184,12 @@ func GetAnalyticsData(username string) Analytics {
 		if i <= 4 {
 			rows.Scan(&a.Categories[i].Name, &a.Categories[i].Amount)
 			a.Categories[i].Amount *= -1
-			if i < 4 {
-				i++
-			}
+			i++
 		} else {
 			var tempString string
 			var tempFloat float64
 			rows.Scan(&tempString, &tempFloat)
-			a.Categories[i].Amount += tempFloat * -1
+			a.Categories[4].Amount += tempFloat * -1
 		}
 	}
 	return a
