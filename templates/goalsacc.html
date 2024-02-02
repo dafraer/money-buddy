@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="support/css/goals.css">
     <script src="support/js/jquery.js"></script>
     <script src="support/js/main.js"></script>
+    <script src="support/js/goals.js"></script>
     <title>Money Buddy</title>
 </head>
 
@@ -18,27 +19,26 @@
     <div id="includedheaderacc"></div>
 
     <main>
-<!-- This 
-        <div class="progress-bar"> 
-            <label for="bar">Your Progress</label>
-            <progress id="bar" value="{{.PiggyBank.Balance}}" max="{{.PiggyBank.TargetAmount}}"></progress>    
-        </div> -->
 
+        <h2 id="title">Your Piggy Bank</h2>
+
+        <!--progress bar-->
         <div class="progress-bar-container">
             <div class="banana-image-container">
                 <img src="images/gbanana.png" id="image1" class="banana_image">
                 <img src="images/banana.png" id="image2" class="banana_image">
-            </div>         
+            </div> 
+            <span id="progress-label" class="progress-label"></span>
         </div>
+        
 
         <div class="tracker">
-            <h2 id="title">Your Piggy Bank</h2>
-            <p>Target Amount: <span id="targetAmount">$</span></p>
-            <p>Target Date: <span id="targetDate">$</span></p>
-            <p>Balance: <span id="balance">$</span></p>
+            <p><b>Target Amount: </b><span id="targetAmount"></span>$</p>
+            <p><b>Target Date: </b><span id="targetDate"></span></p>
+            <p><b>Balance: </b><span id="balance"></span>$</p>
         </div>
 
-        <div class="form-container">
+        <div class="form-container" id="adjust">
             <form id="Form"> 
             <h3>Add to Piggy Bank</h3>
                 <label for="amount">Amount:</label>
@@ -46,66 +46,15 @@
 
             <h3>Adjust Targets</h3>
             
-                <label for="newAmount">New Target Amount:</label>
-                <input type="number" id="newAmount" name="newAmount">
-                <label for="newDate">New Target Date:</label>
-                <input type="text" id="newDate" name="newDate" >
+                <p><label for="newAmount">New Target Amount:</label>
+                <input type="number" id="newAmount" name="newAmount"></p>
+                <p><label for="newDate">New Target Date:</label>
+                <input type="text" id="newDate" name="newDate"></p>
                 <p><br>Date has to be in a YYYY-MM-DD format</p>
-                <!--01/02 03:04:05PM '06 -0700 format (January 2, 15:04:05, 2006, in time zone seven hours west of GMT)-->
                 <p><input type="submit" value="Save changes" id="change"></p>
-                <!--<button id="change" type="submit" onclick="change_opacity()"> Save changes</button>-->
-
             </form> 
         </div>
-        <script>
-            var user = {};
-            Get();
-            document.getElementById("Form").addEventListener("submit", Update);
-        
-            function Get() {
-                var xhr = new XMLHttpRequest();
-                xhr.open('GET', 'http://localhost:8000/getuserdata', true);
-                xhr.onload = function () {
-                    if (this.status == 200) {
-                        var u = JSON.parse(this.responseText);
-                        user = u;
-                        document.getElementById("targetAmount").innerHTML = u.PiggyBank.TargetAmount;
-                        document.getElementById("targetDate").innerHTML = u.PiggyBank.TargetDate;
-                        document.getElementById("balance").innerHTML = u.PiggyBank.Balance;
-                    }
-                };
-                xhr.send();
-            }
-        
-            function Update(e) {
-                e.preventDefault();
-                var amount = parseFloat(document.getElementById("amount").value); 
-                var newAmount = parseFloat(document.getElementById("newAmount").value);
-                var newDate = document.getElementById("newDate").value;
-                if (isNaN(amount)) {
-                    amount = 0;
-                }
-                if (isNaN(newAmount)) {
-                    newAmount = user.PiggyBank.TargetAmount;
-                }
-                if (newDate == "") {
-                    newDate = user.PiggyBank.TargetDate;
-                }
-                var PiggyBank = {
-                    TargetAmount: newAmount,
-                    TargetDate: newDate,
-                    Balance: amount
-                };
-        
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', 'http://localhost:8000/postpiggybank', true);
-                xhr.setRequestHeader('Content-Type', 'application/json');
-                xhr.send(JSON.stringify(PiggyBank));
-                xhr.onload = function() {
-                    Get();
-                }
-            }
-        </script>
+
     </main>
 
     <div id="includedfooter"></div>
