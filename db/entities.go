@@ -19,9 +19,7 @@ type PiggyBank struct {
 }
 
 type Transaction struct {
-	TransactionId int
-	//Storing UserId seems useless, mb delete later
-	//UserId          int
+	TransactionId   int
 	TransactionTime time.Time
 	Amount          float64
 	Category        string

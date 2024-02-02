@@ -20,8 +20,14 @@ var store *sessions.CookieStore
 var current db.User
 
 func HandleRequest() {
+
+	//Creating new cookies session
 	store = sessions.NewCookieStore([]byte("super-secret"))
+
+	//Initializing new user
 	current = db.User{}
+
+	//Loading all the pages
 	http.HandleFunc("/images/", imageHandler)
 	http.HandleFunc("/support/", headerFooterHandler)
 	http.HandleFunc("/support/css/", cssHandler)
@@ -41,6 +47,7 @@ func HandleRequest() {
 	http.ListenAndServe(":8000", context.ClearHandler(http.DefaultServeMux))
 }
 
+// imageHandler serves images
 func imageHandler(w http.ResponseWriter, r *http.Request) {
 	filePath := r.URL.Path
 	filePath = path.Base(filePath)
@@ -48,6 +55,7 @@ func imageHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, fullPath)
 }
 
+// jsHandler serves javascript files
 func jsHandler(w http.ResponseWriter, r *http.Request) {
 	filePath := r.URL.Path
 	filePath = path.Base(filePath)
@@ -55,6 +63,7 @@ func jsHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, fullPath)
 }
 
+// cssHandler serves css files
 func cssHandler(w http.ResponseWriter, r *http.Request) {
 	filePath := r.URL.Path
 	filePath = path.Base(filePath)
@@ -62,6 +71,7 @@ func cssHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, fullPath)
 }
 
+// headerFooter serves footer and header
 func headerFooterHandler(w http.ResponseWriter, r *http.Request) {
 	filePath := r.URL.Path
 	filePath = path.Base(filePath)
@@ -69,9 +79,13 @@ func headerFooterHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, fullPath)
 }
 
+// homePageHandler handles home page
 func homePageHandler(w http.ResponseWriter, r *http.Request) {
+	//Checking if user is logged in
 	session, _ := store.Get(r, "session")
 	_, ok := session.Values["username"]
+
+	//If user is not logged in execute regular home page
 	if !ok {
 		tmpl, err := template.ParseFiles("templates/homepage.html")
 		if err != nil {
@@ -80,6 +94,8 @@ func homePageHandler(w http.ResponseWriter, r *http.Request) {
 		tmpl.Execute(w, nil)
 		return
 	}
+
+	//Else execute template with user account details
 	tmpl, err := template.ParseFiles("templates/homepageacc.html")
 	if err != nil {
 		log.Println(err.Error())
@@ -87,6 +103,7 @@ func homePageHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, current)
 }
 
+// loginHandler provides login form for the user
 func loginHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("templates/login.html")
 	if err != nil {
@@ -95,12 +112,17 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, nil)
 }
 
+// loginAuthHandler authenticates user
 func loginAuthHandler(w http.ResponseWriter, r *http.Request) {
+
+	//Parsing login form
 	r.ParseForm()
 	username := r.FormValue("username")
 	password := r.FormValue("password")
+
 	//Check the validity of username and password
 	correct := db.Authentication(username, password)
+	//if data is valid proceed
 	if correct == true {
 		//Opening current user data
 		current = db.GetUserData(username)
@@ -118,6 +140,7 @@ func loginAuthHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		tmpl.Execute(w, nil)
 	} else {
+		//Else notify user that data is not valid
 		tmpl, err := template.ParseFiles("templates/login.html")
 		if err != nil {
 			log.Println(err.Error())
@@ -126,6 +149,7 @@ func loginAuthHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// registerHandler provides registration from for the user
 func registerHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("templates/registration.html")
 	if err != nil {
@@ -134,11 +158,15 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, nil)
 }
 
+// registerAuthHandler registers new user
 func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
+
+	//Parsing data from the form
 	r.ParseForm()
 	username := r.FormValue("username")
 	password := r.FormValue("password")
-	//Username has to  have no spaces and only ASCII characters
+
+	//Checking that username has no spaces and only ASCII characters
 	var spacesInUsername, spacesInPassword, notASCIIPassowrd, notASCIIUsername bool
 	for _, c := range username {
 		if c == ' ' {
@@ -148,7 +176,8 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 			notASCIIUsername = true
 		}
 	}
-	//Password has to have no spaces and only ASCII characters
+
+	//Checking if the password has no spaces and only ASCII characters
 	for _, c := range password {
 		if c == ' ' {
 			spacesInPassword = true
@@ -157,6 +186,7 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 			notASCIIPassowrd = true
 		}
 	}
+
 	//Checking if the password is at least 8 characters long and fits password requierments
 	//Checking if username is from 1 to 20 characters long and fits username requiermants
 	if len(username) > 20 || len(username) < 1 || len(password) < 8 || spacesInUsername || spacesInPassword || notASCIIPassowrd || notASCIIUsername {
@@ -167,6 +197,7 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 		tmpl.Execute(w, "Password or username does not meet the requirements.")
 		return
 	}
+
 	//Checking if user already exists
 	exists := db.Exists(username)
 	if exists {
@@ -177,6 +208,7 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 		tmpl.Execute(w, "Account already exists")
 		return
 	}
+
 	//Hashing the password
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
@@ -188,6 +220,7 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 		tmpl.Execute(w, "There was a problem registering new user")
 		return
 	}
+
 	//Creating a user
 	db.CreateNewUser(username, string(hash))
 	tmpl, err := template.ParseFiles("templates/registrationsuccess.html")
@@ -197,8 +230,12 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, nil)
 }
 
+// FinancialGoalsHandler handles PiggyBank page
 func financialGoalsHandler(w http.ResponseWriter, r *http.Request) {
+
+	//Checking if user is logged in
 	session, _ := store.Get(r, "session")
+	//If user is not logged in execute template that tells them to log in
 	_, ok := session.Values["username"]
 	if !ok {
 		tmpl, err := template.ParseFiles("templates/goals.html")
@@ -208,6 +245,8 @@ func financialGoalsHandler(w http.ResponseWriter, r *http.Request) {
 		tmpl.Execute(w, nil)
 		return
 	}
+
+	//Else execute template with user's PiggyBank
 	tmpl, err := template.ParseFiles("templates/goalsacc.html")
 	if err != nil {
 		log.Println(err.Error())
@@ -215,9 +254,12 @@ func financialGoalsHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, nil)
 }
 
+// expenseTrackingHandler handles expense tracking page
 func expenseTrackingHandler(w http.ResponseWriter, r *http.Request) {
+	//Check if user is logged in
 	session, _ := store.Get(r, "session")
 	username, ok := session.Values["username"]
+	//If user is not logged in execute template that tells them to log in
 	if !ok {
 		tmpl, err := template.ParseFiles("templates/expenses.html")
 		if err != nil {
@@ -226,6 +268,7 @@ func expenseTrackingHandler(w http.ResponseWriter, r *http.Request) {
 		tmpl.Execute(w, nil)
 		return
 	}
+	//Else execute template with users transactions
 	tmpl, err := template.ParseFiles("templates/expensesacc.html")
 	if err != nil {
 		log.Println(err.Error())
@@ -233,9 +276,12 @@ func expenseTrackingHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, username)
 }
 
+// expenseAnalyticsHandler handles expense analytics page
 func expenseAnalyticsHandler(w http.ResponseWriter, r *http.Request) {
+	//Check if user is logged in
 	session, _ := store.Get(r, "session")
 	_, ok := session.Values["username"]
+	//If user is not logged in execute template that tells them to log in
 	if !ok {
 		tmpl, err := template.ParseFiles("templates/analytics.html")
 		if err != nil {
@@ -244,6 +290,7 @@ func expenseAnalyticsHandler(w http.ResponseWriter, r *http.Request) {
 		tmpl.Execute(w, nil)
 		return
 	}
+	//Else execute template with expense analytics data
 	tmpl, err := template.ParseFiles("templates/analyticsacc.html")
 	if err != nil {
 		log.Println(err.Error())
@@ -251,22 +298,31 @@ func expenseAnalyticsHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, nil)
 }
 
+// getUserDataHandler handles an HTTP request and returns User data encoded in json
 func getUserDataHandler(w http.ResponseWriter, r *http.Request) {
+
+	//Encode current user in json
 	jsonData, err := json.Marshal(current)
 	if err != nil {
 		log.Println(err.Error())
 	}
+
+	//return json encoded user data
 	w.Write(jsonData)
 }
 
+// updatePiggyBankHandler handles an HTTP request to update data in the PiggyBank
 func updatePiggyBankHandler(w http.ResponseWriter, r *http.Request) {
+
+	//Unmarshall new PiggyBank data into a json
 	decoder := json.NewDecoder(r.Body)
 	p := db.PiggyBank{}
 	err := decoder.Decode(&p)
 	if err != nil {
 		log.Println(err.Error())
 	}
-	//adding piggybank transaction
+
+	//Adding PiggyBank transaction
 	if p.Balance > 0 {
 		var t db.Transaction
 		t.TransactionTime = time.Now()
@@ -274,16 +330,25 @@ func updatePiggyBankHandler(w http.ResponseWriter, r *http.Request) {
 		t.Category = "Savings"
 		current.Add(&t, -1)
 	}
+
+	//Updating PiggyBank balance
 	p.Balance += current.PiggyBank.Balance
 	current.PiggyBank = p
+
+	//Save recieved data
 	current.Analytics = db.GetAnalyticsData(current.Username)
 	current.UpdateUserData()
 }
 
+// addTransactionHandler handles HTTP request to add new transaction
 func addTransactionHandler(w http.ResponseWriter, r *http.Request) {
+
+	//Unmarshall transaction data from json file
 	decoder := json.NewDecoder(r.Body)
 	t := db.Transaction{}
 	err := decoder.Decode(&t)
+
+	//Add the transaction
 	current.Add(&t, 1)
 	current.UpdateUserData()
 	if err != nil {
@@ -291,10 +356,13 @@ func addTransactionHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// logoutHandler logs out user by ending cookie session
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
+
 	//Saving user data
 	current.UpdateUserData()
 	session, _ := store.Get(r, "session")
+
 	//Deleting session
 	delete(session.Values, "username")
 	session.Save(r, w)
@@ -303,22 +371,4 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println(err.Error())
 	}
 	tmpl.Execute(w, nil)
-}
-
-func convertToStringTime(t time.Time) string {
-	s := t.Format(time.DateTime)
-	return s
-}
-
-func convertToStringDate(t time.Time) string {
-	s := t.Format(time.DateOnly)
-	return s
-}
-
-func convertToTime(s string) time.Time {
-	t, err := time.Parse(time.DateTime, s)
-	if err != nil {
-		log.Println(err.Error())
-	}
-	return t
 }
