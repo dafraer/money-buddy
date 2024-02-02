@@ -4,12 +4,14 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById("PostForm1").addEventListener("submit", function (event) {
             event.preventDefault();
             Add(1);
+            document.getElementById("PostForm1").reset(); // clear form after submission
             plusModal.style.display = "none"; // close modal after submission
         });
 
         document.getElementById("PostForm2").addEventListener("submit", function (event) {
             event.preventDefault();
             Add(-1);
+            document.getElementById("PostForm2").reset(); // clear form after submission
             minModal.style.display = "none"; // close modal after submission
         });
 
@@ -36,7 +38,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         
                     }
                     document.getElementById("transact").innerHTML = output;
-                    callback(u);
 
                 }
             };
