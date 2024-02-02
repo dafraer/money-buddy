@@ -27,9 +27,12 @@ func (u *User) Add(t *Transaction, c float64) {
 	if err != nil {
 		log.Println(err.Error())
 	}
-	u.Balance += (t.Amount * c)
-	u.Transactions = append(u.Transactions, *t)
-	database.Exec(fmt.Sprintf("INSERT INTO transactions (user_id, transaction_time, amount, category) VALUES('%d', '%s', %v, '%s')", u.UserId, t.TransactionTime.Format(time.DateTime), t.Amount*c, t.Category))
+	t.Amount *= c
+	u.Balance += t.Amount
+	temp := make([]Transaction, 1)
+	temp[0] = *t
+	u.Transactions = append(temp, u.Transactions...)
+	database.Exec(fmt.Sprintf("INSERT INTO transactions (user_id, transaction_time, amount, category) VALUES('%d', '%s', %v, '%s')", u.UserId, t.TransactionTime.Format(time.DateTime), t.Amount, t.Category))
 	u.Analytics = GetAnalyticsData(u.Username)
 }
 
@@ -128,7 +131,8 @@ func GetUserData(username string) User {
 		}
 
 	}
-	rows, err = database.Query(fmt.Sprintf("SELECT transaction_id, transaction_time, amount, category FROM transactions WHERE user_id = %d", u.UserId))
+	//Getting transactions from database
+	rows, err = database.Query(fmt.Sprintf("SELECT transaction_id, transaction_time, amount, category FROM transactions WHERE user_id = %d ORDER BY transaction_time DESC", u.UserId))
 	u.Transactions = make([]Transaction, 0)
 	var transaction_id int
 	var transaction_time, category string
@@ -171,16 +175,23 @@ func GetAnalyticsData(username string) Analytics {
 	}
 
 	//Calculating by category
-	rows, err = database.Query(fmt.Sprintf("SELECT category,  SUM(amount) FROM users LEFT JOIN transactions ON users.user_id = transactions.user_id GROUP BY category HAVING username = '%s' AND amount < 0 ORDER BY SUM(amount)", username))
+	rows, err = database.Query(fmt.Sprintf("SELECT category, SUM(amount) AS total_amount FROM users  LEFT JOIN transactions ON users.user_id = transactions.user_id  WHERE username = '%s' AND amount < 0  GROUP BY category  ORDER BY total_amount;", username))
 	if err != nil {
 		log.Println(err.Error())
 	}
 	i := 0
 	for rows.Next() {
-		rows.Scan(&a.Categories[i].Name, &a.Categories[i].Amount)
-		a.Categories[i].Amount *= -1
-		if i < 4 {
-			i++
+		if i <= 4 {
+			rows.Scan(&a.Categories[i].Name, &a.Categories[i].Amount)
+			a.Categories[i].Amount *= -1
+			if i < 4 {
+				i++
+			}
+		} else {
+			var tempString string
+			var tempFloat float64
+			rows.Scan(&tempString, &tempFloat)
+			a.Categories[i].Amount += tempFloat * -1
 		}
 	}
 	return a
