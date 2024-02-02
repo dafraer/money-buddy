@@ -8,7 +8,6 @@ import (
 	"log"
 	"net/http"
 	"path"
-	"strconv"
 	"time"
 	"unicode"
 
@@ -37,8 +36,7 @@ func HandleRequest() {
 	http.HandleFunc("/analytics", expenseAnalyticsHandler)
 	http.HandleFunc("/getuserdata", getUserDataHandler)
 	http.HandleFunc("/logout", logoutHandler)
-	http.HandleFunc("/goalssave", financialGoalsSaveHandler)
-	http.HandleFunc("/postuserdata", updateUserDataHandler)
+	http.HandleFunc("/postpiggybank", updatePiggyBankHandler)
 	http.HandleFunc("/addtransaction", addTransactionHandler)
 	http.ListenAndServe(":8000", context.ClearHandler(http.DefaultServeMux))
 }
@@ -214,32 +212,7 @@ func financialGoalsHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err.Error())
 	}
-	tmpl.Execute(w, current)
-}
-
-func financialGoalsSaveHandler(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
-	amount, err := strconv.ParseFloat(r.FormValue("amount"), 64)
-	if amount != 0 && err == nil {
-		current.PiggyBank.Balance += amount
-		var t db.Transaction
-		t.TransactionTime = time.Now()
-		t.Amount = amount
-		t.Category = "Savings"
-		current.Add(&t, -1)
-	}
-	newAmount, err := strconv.ParseFloat(r.FormValue("newAmount"), 64)
-	if newAmount != 0 && err == nil {
-		current.PiggyBank.TargetAmount = newAmount
-	}
-	newDateString := r.FormValue("newDate")
-	_, err = time.Parse(time.DateOnly, r.FormValue("newDate"))
-	if err == nil {
-		current.PiggyBank.TargetDate = newDateString
-	}
-	current.Analytics = db.GetAnalyticsData(current.Username)
-	current.UpdateUserData()
-	http.Redirect(w, r, "/goals", http.StatusSeeOther)
+	tmpl.Execute(w, nil)
 }
 
 func expenseTrackingHandler(w http.ResponseWriter, r *http.Request) {
@@ -286,13 +259,25 @@ func getUserDataHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonData)
 }
 
-func updateUserDataHandler(w http.ResponseWriter, r *http.Request) {
+func updatePiggyBankHandler(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
-	err := decoder.Decode(&current)
-	current.UpdateUserData()
+	p := db.PiggyBank{}
+	err := decoder.Decode(&p)
 	if err != nil {
 		log.Println(err.Error())
 	}
+	//adding piggybank transaction
+	if p.Balance > 0 {
+		var t db.Transaction
+		t.TransactionTime = time.Now()
+		t.Amount = p.Balance
+		t.Category = "Savings"
+		current.Add(&t, -1)
+	}
+	p.Balance += current.PiggyBank.Balance
+	current.PiggyBank = p
+	current.Analytics = db.GetAnalyticsData(current.Username)
+	current.UpdateUserData()
 }
 
 func addTransactionHandler(w http.ResponseWriter, r *http.Request) {

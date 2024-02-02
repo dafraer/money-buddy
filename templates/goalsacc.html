@@ -33,29 +33,79 @@
 
         <div class="tracker">
             <h2 id="title">Your Piggy Bank</h2>
-            <p>Target Amount: <span id="targetAmount">{{.PiggyBank.TargetAmount}}{{.Currency}}</span></p>
-            <p>Target Date: <span id="targetDate">{{.PiggyBank.TargetDate}}</span></p>
-            <p>Balance: <span id="balance">{{.PiggyBank.Balance}}{{.Currency}}</span></p>
+            <p>Target Amount: <span id="targetAmount">$</span></p>
+            <p>Target Date: <span id="targetDate">$</span></p>
+            <p>Balance: <span id="balance">$</span></p>
         </div>
 
         <div class="form-container">
-            <form id="Form" method="post" action="/goalssave"> <!--form for go opens-->
+            <form id="Form"> 
             <h3>Add to Piggy Bank</h3>
                 <label for="amount">Amount:</label>
-                <input type="text" id="amount" name="amount">
+                <input type="number" id="amount" name="amount">
 
             <h3>Adjust Targets</h3>
             
                 <label for="newAmount">New Target Amount:</label>
-                <input type="text" id="newAmount" name="newAmount">
+                <input type="number" id="newAmount" name="newAmount">
                 <label for="newDate">New Target Date:</label>
                 <input type="text" id="newDate" name="newDate" >
                 <p><br>Date has to be in a YYYY-MM-DD format</p>
                 <!--01/02 03:04:05PM '06 -0700 format (January 2, 15:04:05, 2006, in time zone seven hours west of GMT)-->
-                <button type="submit" onclick="change_opacity()"> Save changes</button>
+                <p><input type="submit" value="Save changes" id="change"></p>
+                <!--<button id="change" type="submit" onclick="change_opacity()"> Save changes</button>-->
 
-            </form> <!--form for go closes-->
+            </form> 
         </div>
+        <script>
+            var user = {};
+            Get();
+            document.getElementById("Form").addEventListener("submit", Update);
+        
+            function Get() {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', 'http://localhost:8000/getuserdata', true);
+                xhr.onload = function () {
+                    if (this.status == 200) {
+                        var u = JSON.parse(this.responseText);
+                        user = u;
+                        document.getElementById("targetAmount").innerHTML = u.PiggyBank.TargetAmount;
+                        document.getElementById("targetDate").innerHTML = u.PiggyBank.TargetDate;
+                        document.getElementById("balance").innerHTML = u.PiggyBank.Balance;
+                    }
+                };
+                xhr.send();
+            }
+        
+            function Update(e) {
+                e.preventDefault();
+                var amount = parseFloat(document.getElementById("amount").value); 
+                var newAmount = parseFloat(document.getElementById("newAmount").value);
+                var newDate = document.getElementById("newDate").value;
+                if (isNaN(amount)) {
+                    amount = 0;
+                }
+                if (isNaN(newAmount)) {
+                    newAmount = user.PiggyBank.TargetAmount;
+                }
+                if (newDate == "") {
+                    newDate = user.PiggyBank.TargetDate;
+                }
+                var PiggyBank = {
+                    TargetAmount: newAmount,
+                    TargetDate: newDate,
+                    Balance: amount
+                };
+        
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'http://localhost:8000/postpiggybank', true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.send(JSON.stringify(PiggyBank));
+                xhr.onload = function() {
+                    Get();
+                }
+            }
+        </script>
     </main>
 
     <div id="includedfooter"></div>
