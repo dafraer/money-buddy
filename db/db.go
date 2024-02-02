@@ -10,25 +10,40 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// UpdateUserData updates user data in the database
 func (u *User) UpdateUserData() {
+
+	//Opening the database
 	database, err := sql.Open("sqlite3", "./users.db")
 	defer database.Close()
 	if err != nil {
 		log.Println(err.Error())
 	}
+
+	//Updating user's data in the database
 	database.Exec(fmt.Sprintf("UPDATE users SET balance = %v, username = '%s', currency = '%s' WHERE user_id = %d", u.Balance, u.Username, u.Currency, u.UserId))
 	database.Exec(fmt.Sprintf("UPDATE piggy_bank SET balance = %v, target_amount = %v, target_date = '%s' WHERE user_id = %d", u.PiggyBank.Balance, u.PiggyBank.TargetAmount, u.PiggyBank.TargetDate, u.UserId))
 }
 
-// Add method adds transactions to the user account. Variable c has to be 1 when money is recieved and -1 when money is lost
+// Add method adds transactions to the account
+// Variable c has to be 1 when money is recieved and -1 when money is lost
 func (u *User) Add(t *Transaction, c float64) {
+
+	//Opening database
 	database, err := sql.Open("sqlite3", "./users.db")
 	defer database.Close()
 	if err != nil {
 		log.Println(err.Error())
 	}
+
+	//Adjusting transaction amount depending on it being income or expenditure
 	t.Amount *= c
+
+	//Adding transaction to the main balance
 	u.Balance += t.Amount
+
+	//Adding transaction to the transactions table in the database
+	//Transactions are added to the beginning of the slice in order for the added transaction to be displayed at the top
 	temp := make([]Transaction, 1)
 	temp[0] = *t
 	u.Transactions = append(temp, u.Transactions...)
@@ -36,23 +51,20 @@ func (u *User) Add(t *Transaction, c float64) {
 	u.Analytics = GetAnalyticsData(u.Username)
 }
 
-func (u *User) Remove(t *Transaction) {
-	database, err := sql.Open("sqlite3", "./users.db")
-	defer database.Close()
-	if err != nil {
-		log.Println(err.Error())
-	}
-	u.Transactions = append(u.Transactions[:t.TransactionId-1], u.Transactions[t.TransactionId:]...)
-	database.Query(fmt.Sprintf("DELETE FROM transactions WHERE transaction_id = %d", t.TransactionId))
-}
-
+// CreateNewUser adds new user to the database
 func CreateNewUser(username string, password string) {
+
+	//Opening database
 	database, err := sql.Open("sqlite3", "./users.db")
 	defer database.Close()
 	if err != nil {
 		log.Println(err.Error())
 	}
+
+	//Adding new user to the users table in the database
 	database.Exec(fmt.Sprintf("INSERT INTO users (username, password) VALUES('%s', '%s')", username, password))
+
+	//Getting user_id from the database
 	rows, err := database.Query(fmt.Sprintf("SELECT user_id FROM users WHERE username = '%s'", username))
 	if err != nil {
 		log.Println(err.Error())
@@ -61,20 +73,29 @@ func CreateNewUser(username string, password string) {
 	for rows.Next() {
 		rows.Scan(&user_id)
 	}
+
+	//Creating new PiggyBank in piggy_bank table
 	database.Exec(fmt.Sprintf("INSERT INTO piggy_bank (user_id) VALUES(%d)", user_id))
 }
 
+// Exists checks if user exists in the database
 func Exists(username string) bool {
+
+	//Opening the database
 	database, err := sql.Open("sqlite3", "./users.db")
 	defer database.Close()
 	if err != nil {
 		log.Println(err.Error())
 	}
+
+	//Getting all userenames from the database
 	rows, err := database.Query("SELECT username FROM users")
 	defer rows.Close()
 	if err != nil {
 		log.Println(err.Error())
 	}
+
+	//Checking if the same username already exists
 	var usernameDB string
 	for rows.Next() {
 		rows.Scan(&usernameDB)
@@ -85,21 +106,29 @@ func Exists(username string) bool {
 	return false
 }
 
+// Authentication checks if username and password are valid
 func Authentication(username string, password string) bool {
+
+	//Opening the database
 	database, err := sql.Open("sqlite3", "./users.db")
 	defer database.Close()
 	if err != nil {
 		log.Println(err.Error())
 	}
+
+	//Selecting usernames and password from users table in the database
 	rows, err := database.Query("SELECT username, password FROM users")
 	defer rows.Close()
 	if err != nil {
 		log.Println(err.Error())
 	}
+
+	//Checking validity of the username and the password
 	var usernameDB, passwordDB string
 	for rows.Next() {
 		rows.Scan(&usernameDB, &passwordDB)
 		if usernameDB == username {
+			//Since passwords are not stored directly password hash is compared
 			err := bcrypt.CompareHashAndPassword([]byte(passwordDB), []byte(password))
 			if err == nil {
 				return true
@@ -110,13 +139,20 @@ func Authentication(username string, password string) bool {
 	return false
 }
 
+// GetUserData returns user data from the database
 func GetUserData(username string) User {
+
+	//Initializing new user
 	var u User
+
+	//Opening the database
 	database, err := sql.Open("sqlite3", "./users.db")
 	defer database.Close()
 	if err != nil {
 		log.Println(err.Error())
 	}
+
+	//Get user data from the database
 	rows, err := database.Query(fmt.Sprintf("SELECT users.user_id, username, target_amount, target_date, currency, users.balance, piggy_bank.balance FROM users  JOIN piggy_bank ON users.user_id = piggy_bank.user_id WHERE username = '%s'", username))
 	if err != nil {
 		log.Println(err.Error())
@@ -131,6 +167,7 @@ func GetUserData(username string) User {
 		}
 
 	}
+
 	//Getting transactions from database
 	rows, err = database.Query(fmt.Sprintf("SELECT transaction_id, transaction_time, amount, category FROM transactions WHERE user_id = %d ORDER BY transaction_time DESC", u.UserId))
 	u.Transactions = make([]Transaction, 0)
@@ -148,14 +185,20 @@ func GetUserData(username string) User {
 	return u
 }
 
+// GetAnalyticsData returns analysed user data
 func GetAnalyticsData(username string) Analytics {
+
+	//Initializing analytics variable
 	var a Analytics
 	a.Username = username
+
+	//Opening the database
 	database, err := sql.Open("sqlite3", "./users.db")
 	defer database.Close()
 	if err != nil {
 		log.Println(err.Error())
 	}
+
 	//Getting total income and expense
 	rows, err := database.Query(fmt.Sprintf("SELECT amount FROM transactions JOIN users ON users.user_id = transactions.user_id WHERE username = '%s'", username))
 	defer rows.Close()
@@ -168,8 +211,8 @@ func GetAnalyticsData(username string) Analytics {
 			a.Expenditure += t
 		}
 	}
-	//Лютейший костыль
-	//Но без него выводит -0
+
+	//Making a.Expenditure equal to 0 in case it is -0
 	if a.Expenditure != 0 {
 		a.Expenditure *= -1
 	}
@@ -181,6 +224,8 @@ func GetAnalyticsData(username string) Analytics {
 	}
 	i := 0
 	for rows.Next() {
+		//Adding first 4 categories into piechart
+		//The rest categories are combined and displayed as "Other"
 		if i <= 4 {
 			rows.Scan(&a.Categories[i].Name, &a.Categories[i].Amount)
 			a.Categories[i].Amount *= -1
