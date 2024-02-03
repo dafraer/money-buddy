@@ -59,6 +59,10 @@ document.addEventListener('DOMContentLoaded', function () {
         xhr.send(JSON.stringify(PiggyBank));
         xhr.onload = function() {
             Get();
+            // Clear input fields after form submission
+            document.getElementById("amount").value = "";
+            document.getElementById("newAmount").value = "";
+            document.getElementById("newDate").value = "";
         }
     }
 });

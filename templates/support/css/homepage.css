@@ -11,18 +11,18 @@
     
     .grid-container {
         display: grid;
-        grid-template-columns: repeat(2, 15vw); /* 15% of the viewport width for each column */
-        grid-template-rows: repeat(2, 15vw); /* 15% of the viewport height for each row */
-        gap: 2vw; /* 2% of the viewport width for gap */
-        justify-content: center; /* Center horizontally */
-        align-items: center; /* Center vertically */
-        margin-top: 2vh; /* 5% of the viewport height for margin from the top */
+        grid-template-columns: repeat(2, 15vw);
+        grid-template-rows: repeat(2, 15vw);
+        gap: 2vw;
+        justify-content: center;
+        align-items: center;
+        margin-top: 2vh;
     }    
     
     .grid-item {
-        width: 15vw; /* 15% of the viewport width for each square */
-        height: 15vw; /* 15% of the viewport height for each square */
-        background-color: #ccc; /* Adjust background color */
+        width: 15vw;
+        height: 15vw;
+        background-color: #ccc;
         transition: background-color 0.3s;
         display: flex;
         flex-direction: column;
@@ -34,7 +34,7 @@
     }
 
     .grid-item:hover {
-        background-color: #eee; /* Change background color on hover */
+        background-color: #eee;
     }
 
     #grid1 p {
@@ -44,8 +44,8 @@
 
     #grid2 p {
         position: absolute;
-        top: 20%; /* Center the image vertically */
-        left: 50%; /* Center the image horizontally */
+        top: 20%;
+        left: 50%;
         transform: translate(-50%, -50%);
     }    
     #grid2 img {
@@ -53,8 +53,8 @@
         max-height: 80%;
         transition: opacity 0.8 ease;
         position: absolute;
-        top: 60%; /* Center the image vertically */
-        left: 50%; /* Center the image horizontally */
+        top: 60%;
+        left: 50%;
         transform: translate(-50%, -50%);
     }
 
@@ -80,9 +80,9 @@
     #grid3 #plusbtn {
         background-color: #fff;
         color: #43766C;
-        font-size: 1.5vw; /* Adjust font size */
-        width: 3vw; /* Adjust button width */
-        height: 3vw; /* Adjust button height */
+        font-size: 1.5vw;
+        width: 3vw;
+        height: 3vw;
         border: 0.2vw solid #43766C;
         border-radius: 50%;
         cursor: pointer;
@@ -99,9 +99,9 @@
         background-color: #fff;
         color: #BF3131;
         display: inline-block;
-        font-size: 1.5vw; /* Adjust font size */
-        width: 3vw; /* Adjust button width */
-        height: 3vw; /* Adjust button height */
+        font-size: 1.5vw;
+        width: 3vw;
+        height: 3vw;
         border: 0.2vw solid #BF3131;
         border-radius: 50%;
         cursor: pointer;
@@ -115,30 +115,29 @@
       }
     
     .pie-chart {
-        width: 60%; /* Adjust width of the pie chart */
-        height: 60%; /* Adjust height of the pie chart */
-        border-radius: 50%; /* Create a circle */
+        width: 60%;
+        height: 60%;
+        border-radius: 50%;
         background: conic-gradient(
             #03506F 0% 30%,
             #ec9c9d 30% 40%,
             #89B9AD 40% 56%,
             #bfcea9 56% 80%,
             #fcc983 80% 100%
-        ); /* Adjust colors and stops for the pie chart */ }
+        );
+    }
 
-            /* Define the animation for the pie chart */
     @keyframes rotatePie {
         from {
             transform: rotate(0deg);
         }
         to {
-            transform: rotate(200deg); /* Adjust the degree of rotation */
+            transform: rotate(360deg);
         }
     }
 
-    /* Apply the animation to the pie chart */
     #grid4:hover .pie-chart {
-        animation: rotatePie 0.6s linear forwards; /* Adjust the duration and easing */
+        animation: rotatePie 0.3s linear forwards;
         background: conic-gradient(
             #03506F 0% 20%,
             #ec9c9d 20% 35%,
