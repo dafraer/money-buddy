@@ -18,7 +18,7 @@ body {
     text-align: left;
     margin-top: 10vh;
     margin-left: 10%;
-    font-size: 6em;
+    font-size: 4em;
     transition: background-color 0.3s;
     border-radius: 0.5em;
 }
@@ -68,13 +68,13 @@ body {
 }
 
 .image-container {
-    position: fixed;
-    bottom: 10vh;
-    left: 75vw;
+    position: absolute;
+    bottom: 5vh;
+    left: 83vw;
     z-index: 999; /* Ensure the image appears on top of other content */
 }
 
 .image-container img {
-    width: 80%; /* Adjust the width of the image */
+    width: 100%; /* Adjust the width of the image */
     height: auto; /* Maintain aspect ratio */
 }
