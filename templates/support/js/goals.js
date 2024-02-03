@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {    
-
     var user = {};
+    var timern = new Date(); // Get the current date
     Get();
     document.getElementById("Form").addEventListener("submit", Update);
 
@@ -18,6 +18,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Calculate balance percentage rounded to the nearest integer
                 var balancePercentage = Math.round((u.PiggyBank.Balance / u.PiggyBank.TargetAmount) * 100);
 
+                if (isNaN(balancePercentage)) {
+                    balancePercentage = 0;
+                }
+                if (!isFinite(balancePercentage)) {
+                    balancePercentage = 0;
+                }
+
                 // Set opacity of green banana image based on balance percentage
                 var greenBananaOpacity = balancePercentage >= 100 ? '0' : (1 - (balancePercentage / 100)).toString();
                 document.getElementById("image1").style.opacity = greenBananaOpacity;
@@ -28,6 +35,41 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Update progress label with rounded percentage
                 document.getElementById("progress-label").innerText = "Your progress: " + balancePercentage + "%";
+                
+                // calculate how many dollares left
+                var targetDate = new Date(u.PiggyBank.TargetDate);
+                var total_seconds = Math.abs(targetDate - timern) / 1000;  
+                var days_difference = Math.trunc(total_seconds / (60 * 60 * 24)) + 1;
+                console.log(days_difference);
+                var targetAmount = u.PiggyBank.TargetAmount;
+                var balance = u.PiggyBank.Balance;
+
+                if ((days_difference == 0) || (days_difference == 1)) {
+                    var dolares = targetAmount;
+                    document.getElementById("dolares").innerHTML = dolares;
+                }
+
+                else if (balance==targetAmount) {
+                    var success = "You've reached your goal!";
+                    document.getElementById("success").innerHTML = success;
+                    document.getElementById("daily").style.display = "none";
+                } 
+
+                else {
+                    // how many dollars per day are needed = dolares
+                    var dolares = (targetAmount - balance) / days_difference;
+                    dolares = dolares.toFixed(2);
+                    if (isNaN(dolares)) {
+                        dolares = 0;
+                    }
+                    
+                    if (!isFinite(dolares)) {
+                        dolares = 0;
+                    }
+
+                    document.getElementById("dolares").innerHTML = dolares;
+                }
+
             }
         };
         xhr.send();
@@ -38,20 +80,40 @@ document.addEventListener('DOMContentLoaded', function () {
         var amount = parseFloat(document.getElementById("amount").value); 
         var newAmount = parseFloat(document.getElementById("newAmount").value);
         var newDate = document.getElementById("newDate").value;
+        
         if (isNaN(amount)) {
             amount = 0;
         }
+
+        if (amount < 0) {
+            amount = 0;
+            alert('Please add positive amount!');
+        }
+
         if (isNaN(newAmount)) {
             newAmount = user.PiggyBank.TargetAmount;
         }
+
+        if (newAmount < 0) {
+            newAmount = user.PiggyBank.TargetAmount;
+            alert('Please add positive amount!');
+        }
+
         if (newDate == "") {
             newDate = user.PiggyBank.TargetDate;
-        }
+
+        } else if (new Date(newDate) < timern) {
+            alert('Please enter a future date!');
+            newDate = user.PiggyBank.TargetDate;
+        }      
+        
         var PiggyBank = {
             TargetAmount: newAmount,
             TargetDate: newDate,
             Balance: amount
         };
+
+        location.reload();
 
         var xhr = new XMLHttpRequest();
         xhr.open('POST', 'http://localhost:8000/postpiggybank', true);

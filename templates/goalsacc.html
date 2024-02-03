@@ -23,7 +23,11 @@
         <div class="tracker">
             <p><b>Target Amount: </b><span id="targetAmount"></span>$</p>
             <p><b>Target Date: </b><span id="targetDate"></span></p>
-            <p><b>Balance: </b><span id="balance"></span>$</p>
+            <p><b>Piggy Bank Balance: </b><span id="balance"></span>$</p>
+            
+            <i id="daily"><p>To hit your goal on time, </p>
+            <p>add <b><span id="dolares"></span>$</b> to your account daily!</p></i>
+            <p><b><span id="success"></span></b></p>
         </div>
 
         <!--progress bar-->
@@ -46,8 +50,7 @@
                 <p><label for="newAmount">New Target Amount:</label>
                 <input type="number" id="newAmount" name="newAmount"></p>
                 <p><label for="newDate">New Target Date:</label>
-                <input type="text" id="newDate" name="newDate"></p>
-                <p><br>Date has to be in a YYYY-MM-DD format</p>
+                <input type="date" id="newDate" name="newDate"></p>
                 <p><input type="submit" value="Save changes" id="change"></p>
             </form> 
         </div>
