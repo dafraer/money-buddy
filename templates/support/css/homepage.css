@@ -1,5 +1,150 @@
-#homebtn {
-    font-weight: bold;
-    font-size: 1.1vw;
-    background-color: #ffffff;
-    color: #310B0B;}
+    #homebtn {
+        font-weight: bold;
+        font-size: 1.1vw;
+        background-color: #ffffff;
+        color: #310B0B;}
+
+    html a {
+        text-decoration: none;
+        color: #310B0C;
+    }  
+    
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(2, 15vw); /* 15% of the viewport width for each column */
+        grid-template-rows: repeat(2, 15vw); /* 15% of the viewport height for each row */
+        gap: 2vw; /* 2% of the viewport width for gap */
+        justify-content: center; /* Center horizontally */
+        align-items: center; /* Center vertically */
+        margin-top: 2vh; /* 5% of the viewport height for margin from the top */
+    }    
+    
+    .grid-item {
+        width: 15vw; /* 15% of the viewport width for each square */
+        height: 15vw; /* 15% of the viewport height for each square */
+        background-color: #ccc; /* Adjust background color */
+        transition: background-color 0.3s;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border-radius: 5%;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .grid-item:hover {
+        background-color: #eee; /* Change background color on hover */
+    }
+
+    #grid1 p {
+        margin-bottom: 1vh;
+        margin-top: 1vh;
+    }
+
+    #grid2 p {
+        position: absolute;
+        top: 20%; /* Center the image vertically */
+        left: 50%; /* Center the image horizontally */
+        transform: translate(-50%, -50%);
+    }    
+    #grid2 img {
+        max-width: 80%;
+        max-height: 80%;
+        transition: opacity 0.8 ease;
+        position: absolute;
+        top: 60%; /* Center the image vertically */
+        left: 50%; /* Center the image horizontally */
+        transform: translate(-50%, -50%);
+    }
+
+    #grid2 #yellowbanana {
+        opacity: 0;
+        position: absolute;
+        top: 60%; /* Center the image vertically */
+        left: 50%; /* Center the image horizontally */
+        transform: translate(-50%, -50%);}
+
+    #grid2:hover #yellowbanana {
+        opacity: 1;
+    }
+
+    #grid3 p {
+        margin-bottom: 5vh;
+    }
+    #grid3 .btn-container {
+        justify-content: center;
+        margin-bottom: 4vh;
+    }
+
+    #grid3 #plusbtn {
+        background-color: #fff;
+        color: #43766C;
+        font-size: 1.5vw; /* Adjust font size */
+        width: 3vw; /* Adjust button width */
+        height: 3vw; /* Adjust button height */
+        border: 0.2vw solid #43766C;
+        border-radius: 50%;
+        cursor: pointer;
+        margin-right: 0.5vw;
+        transition: all 0.3s ease;
+    }
+    
+    #grid3:hover #plusbtn {
+        background-color: #43766C;
+        color: #fff;
+    }
+
+    #grid3 #minbtn {
+        background-color: #fff;
+        color: #BF3131;
+        display: inline-block;
+        font-size: 1.5vw; /* Adjust font size */
+        width: 3vw; /* Adjust button width */
+        height: 3vw; /* Adjust button height */
+        border: 0.2vw solid #BF3131;
+        border-radius: 50%;
+        cursor: pointer;
+        margin-left: 0.5vw;
+        transition: all 0.3s ease;
+      }
+      
+      #grid3:hover #minbtn {
+        background-color: #BF3131;
+        color: #fff;
+      }
+    
+    .pie-chart {
+        width: 60%; /* Adjust width of the pie chart */
+        height: 60%; /* Adjust height of the pie chart */
+        border-radius: 50%; /* Create a circle */
+        background: conic-gradient(
+            #03506F 0% 30%,
+            #ec9c9d 30% 40%,
+            #89B9AD 40% 56%,
+            #bfcea9 56% 80%,
+            #fcc983 80% 100%
+        ); /* Adjust colors and stops for the pie chart */ }
+
+            /* Define the animation for the pie chart */
+    @keyframes rotatePie {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(200deg); /* Adjust the degree of rotation */
+        }
+    }
+
+    /* Apply the animation to the pie chart */
+    #grid4:hover .pie-chart {
+        animation: rotatePie 0.6s linear forwards; /* Adjust the duration and easing */
+        background: conic-gradient(
+            #03506F 0% 20%,
+            #ec9c9d 20% 35%,
+            #89B9AD 35% 60%,
+            #bfcea9 60% 88%,
+            #fcc983 88% 100%
+        );
+        
+    }

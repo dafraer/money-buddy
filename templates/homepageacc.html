@@ -3,7 +3,7 @@
 
 <head>
     <!--This is necessary to avoid "http://localhost:8000/favicon.ico [HTTP/1.1 404 Not Found 0ms]" error-->
-    <link rel="shortcut icon" href="#"/>
+    <link rel="shortcut icon" href="#" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="support/css/main.css">
@@ -18,9 +18,42 @@
     <div id="includedheaderacc"></div>
 
     <main>
-        <h2 id="title">Account info</h2>
-        <p><b>Your name: </b>{{.Username}}</p>
-        <p><b>Your balance: </b>{{.Balance}}$</p>
+
+        <h2 id="title">Explore Money Buddy!</h2>
+
+        <div class="grid-container">
+
+            <a href="/main" class="grid-item" id="grid1">
+                <p><b>Your name: </b></p><p>{{.Username}}</p>
+                <br>
+                <p><b>Your balance: </b></p><p>{{.Balance}}$</p>
+            </a>
+
+            <a href="/goals" class="grid-item" id="grid2">
+                <p><b>Piggy Bank</b></p>
+                <img src="images/gbanana.png" alt="green banana" id="greenbanana">
+                <img src="images/banana.png" alt="yellow banana" id="yellowbanana">
+            </a>
+
+            <a href="/expenses" class="grid-item" id="grid3">
+                <p><b>Budget Tracker</b></p>
+                <div class="btn-container">
+                    <button type="button" id="plusbtn" class="button-small">&#43</button>
+                    <button type="button" id="minbtn" class="button-small">&#8722</button>
+                </div>
+            </a>
+
+            <a href="/analytics" class="grid-item" id="grid4">
+                <p><b>Analytics</b></p>
+                    <div class="pie-chart">
+                        <div class="slice slice1"></div>
+                        <div class="slice slice2"></div>
+                        <div class="slice slice3"></div>
+                        <div class="slice slice4"></div>
+                        <div class="slice slice5"></div>
+                    </div>
+            </a>
+        </div>
     </main>
 
     <div id="includedfooter"></div>
