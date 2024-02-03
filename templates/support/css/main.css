@@ -49,37 +49,48 @@
 
     nav {
         display: flex;
-        justify-content: space-around;
+        justify-content: center; /* Change from space-around to space-between */
         align-items: center;
         margin-top: 3%;
     }
-
+    
     nav a {
         text-decoration: none;
         color: #ffffff;
         background-color: #310B0B;
         font-size: 1.1vw;
         padding: 0.9% 1%;
-        width: 10vw;
-        height: 1vw;
+        min-width: 8vw;
         display: flex;
         align-items: center;
         justify-content: center;
         border-radius: 1vw;
+        transition: all 0.3s ease;
+        margin-right: 5vw; /* Adjusted margin between buttons */
+        margin-left: 5vw;
     }
 
+    
+    nav a:hover {
+        background-color: #76453B;
+    }
+    
     #homebtn {
         text-decoration: none;
         padding: 0.9% 1%;
-        width: 9.4vw;
-        height: 1vw;
+        min-width: 8vw;
         display: flex;
         align-items: center;
         justify-content: center;
         border-radius: 1vw;
     }
+    
+    
 
-    #hello {color: #310B0B;}
+    #hello {
+        color: #310B0B;
+        justify-content: center;
+    }
 
     main {
         font-size: 1.3vw;
@@ -89,6 +100,7 @@
 
     #title {
         text-align: center;
+        justify-content: center;
         position: relative;
         height: 3vw;
         color: #310B0C;
