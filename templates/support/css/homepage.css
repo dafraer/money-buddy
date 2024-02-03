@@ -1,13 +1,14 @@
-#homebtn {
-    font-weight: bold;
-    font-size: 1.1vw;
-    background-color: #ffffff;
-    color: #310B0B;}
+    #homebtn {
+        font-weight: bold;
+        font-size: 1.1vw;
+        background-color: #ffffff;
+        color: #310B0B;}
 
-html a {
-    text-decoration: none;
-    color: #310B0C;
-}
+    html a {
+        text-decoration: none;
+        color: #310B0C;
+    }  
+    
     .grid-container {
         display: grid;
         grid-template-columns: repeat(2, 15vw); /* 15% of the viewport width for each column */
@@ -15,7 +16,7 @@ html a {
         gap: 2vw; /* 2% of the viewport width for gap */
         justify-content: center; /* Center horizontally */
         align-items: center; /* Center vertically */
-        margin-top: 5vh; /* 5% of the viewport height for margin from the top */
+        margin-top: 2vh; /* 5% of the viewport height for margin from the top */
     }    
     
     .grid-item {
