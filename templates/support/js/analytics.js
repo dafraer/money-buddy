@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.documentElement.style.setProperty('--top3CSS', amount3_f);
             }
             // banana math
-            bananamath = Math.round(totalSpent / 0.6);
+            bananamath = Math.round(totalSpent / 0.3);
             document.getElementById('bananamath').innerHTML = bananamath;
         }
     }
