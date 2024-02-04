@@ -63,12 +63,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     var dolares = (targetAmount - balance) / days_difference;
                     dolares = dolares.toFixed(2);
 
-                    // check that dolares is not Nan or Infinity
+                    // check that dolares is not Nan or Infinity or < than 0
                     if (isNaN(dolares)) {
                         dolares = 0;
                     }
                     
                     if (!isFinite(dolares)) {
+                        dolares = 0;
+                    }
+
+                    if (dolares < 0) {
                         dolares = 0;
                     }
 
