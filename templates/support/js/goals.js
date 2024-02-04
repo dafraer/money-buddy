@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
     Get();
     document.getElementById("Form").addEventListener("submit", Update);
 
+    // ajax request func
     function Get() {
         var xhr = new XMLHttpRequest();
         xhr.open('GET', 'http://localhost:8000/getuserdata', true);
@@ -44,11 +45,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 var targetAmount = u.PiggyBank.TargetAmount;
                 var balance = u.PiggyBank.Balance;
 
+                // check that it's not 0 or 1 days letf
                 if ((days_difference == 0) || (days_difference == 1)) {
                     var dolares = targetAmount;
                     document.getElementById("dolares").innerHTML = dolares;
                 }
 
+                // check if user reached target amount
                 else if (balance==targetAmount) {
                     var success = "You've reached your goal!";
                     document.getElementById("success").innerHTML = success;
@@ -59,6 +62,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     // how many dollars per day are needed = dolares
                     var dolares = (targetAmount - balance) / days_difference;
                     dolares = dolares.toFixed(2);
+
+                    // check that dolares is not Nan or Infinity
                     if (isNaN(dolares)) {
                         dolares = 0;
                     }
@@ -75,6 +80,7 @@ document.addEventListener('DOMContentLoaded', function () {
         xhr.send();
     }
 
+    // update database with new variables
     function Update(e) {
         e.preventDefault();
         var amount = parseFloat(document.getElementById("amount").value); 

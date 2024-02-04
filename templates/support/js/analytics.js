@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
 
-    // api request function
+    // ajax request function
     xhr = new XMLHttpRequest();
     xhr.open('GET', 'http://localhost:8000/getuserdata', true);
     xhr.onload = function () {
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById("amountother").style.display = "none";
             }
 
-            // List of variables and manipulations
+            // all variables and manipulations for pie chart
             var amount0 = parseFloat(document.getElementById("amount0").textContent);
             var amount1 = parseFloat(document.getElementById("amount1").textContent);
             var amount2 = parseFloat(document.getElementById("amount2").textContent);
@@ -38,14 +38,15 @@ document.addEventListener('DOMContentLoaded', function () {
             var amount2_f = ((amount2 / totalSpent) * 100) + ((amount1 / totalSpent) * 100) + ((amount0 / totalSpent) * 100) + '%';
             var amount3_f = ((amount3 / totalSpent) * 100) + ((amount2 / totalSpent) * 100) + ((amount1 / totalSpent) * 100) + ((amount0 / totalSpent) * 100) + '%';
 
-            // pie always full (even wuthout expenses)
+            // pie chart always full (even without expenses)
             var full = 0;
             if (totalSpent == '0') {
                 full = 100 + '%';
                 document.documentElement.style.setProperty('--fullCSS', full);
                 document.getElementById("noexpenses").innerHTML = "pie chart will change when you'll start tracking expenses!";
-                // noexpenses
-             } 
+            }
+            
+            // send variables to css file
             else {
                 document.documentElement.style.setProperty('--otherCSS', other_f);
                 document.documentElement.style.setProperty('--top0CSS', amount0_f);
@@ -53,6 +54,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.documentElement.style.setProperty('--top2CSS', amount2_f);
                 document.documentElement.style.setProperty('--top3CSS', amount3_f);
             }
+            
             // banana math
             bananamath = Math.round(totalSpent / 0.3);
             document.getElementById('bananamath').innerHTML = bananamath;

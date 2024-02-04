@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
             minModal.style.display = "none"; // close modal after submission
         });
 
+        // ajax request func
         function Get(callback) {
             var xhr = new XMLHttpRequest();
             xhr.open('GET', 'http://localhost:8000/getuserdata', true);
@@ -26,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     for (let i = 0; i < u.Transactions.length; i++) {
                         output += '<tr> <td>' + formatTransactionTime(u.Transactions[i].TransactionTime) + '</td> <td>' + u.Transactions[i].Amount + '</td> <td>' + u.Transactions[i].Category + ' </td> </tr><br>';
 
-                        // function that change output time
+                        // function that changes output time
                         function formatTransactionTime(dateTimeString) {
                             var dateTime = new Date(dateTimeString);
                             var month = ('0' + (dateTime.getMonth() + 1)).slice(-2);
@@ -44,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
             xhr.send();
         }
         
+        // add values to database
         function Add(value) {
                 if (value == 1) {
                     var category = document.getElementById("category1").value;
@@ -57,6 +59,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     Amount: amount * value,
                     Category: category
                 };
+
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', 'http://localhost:8000/addtransaction', true);
                 xhr.setRequestHeader('Content-Type', 'application/json');

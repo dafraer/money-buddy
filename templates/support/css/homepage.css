@@ -42,6 +42,10 @@
         margin-top: 1vh;
     }
 
+    #grid1:hover .text-highlight {
+        color: #205B20;
+    }
+
     #grid2 p {
         position: absolute;
         top: 20%;
@@ -61,8 +65,8 @@
     #grid2 #yellowbanana {
         opacity: 0;
         position: absolute;
-        top: 60%; /* Center the image vertically */
-        left: 50%; /* Center the image horizontally */
+        top: 60%;
+        left: 50%;
         transform: translate(-50%, -50%);}
 
     #grid2:hover #yellowbanana {
@@ -145,5 +149,4 @@
             #bfcea9 60% 88%,
             #fcc983 88% 100%
         );
-        
     }

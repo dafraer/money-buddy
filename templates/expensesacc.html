@@ -25,8 +25,8 @@
             <div id="plusModal" class="modal">
                 <div class="modal-content">
                     <form id="PostForm1">
-                        <p>Amount: <input type="number" id="amount1"></p>
-                        <p>Category: <input type="text" id="category1"></p>
+                        <p>Amount: <input type="number" id="amount1" min="0" required></p>
+                        <p>Category: <input type="text" id="category1" required></p>
                         <p><input type="submit" value="Add" id="add"></p>
                     </form>
                     <span class="close" id="close_plusModal">&times;</span>
@@ -37,8 +37,8 @@
             <div id="minModal" class="modal">
                 <div class="modal-content">
                     <form id="PostForm2">
-                        <p>Amount: <input type="number" id="amount2"></p>
-                        <p>Category: <input type="text" id="category2"></p>
+                        <p>Amount: <input type="number" id="amount2" min="0" required></p>
+                        <p>Category: <input type="text" id="category2" required></p>
                         <p><input type="submit" value="Add" id="subtract"></p>
                     </form>
                     <span class="close" id="close_minModal">&times;</span>

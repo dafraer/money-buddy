@@ -64,17 +64,17 @@ body {
     justify-content: center;
     border-radius: 2vw;
     background-color: #ffffff;
-    margin: 1vh; /* Add margin between buttons */
+    margin: 1vh;
 }
 
 .image-container {
     position: absolute;
     bottom: 5vh;
     left: 83vw;
-    z-index: 999; /* Ensure the image appears on top of other content */
+    z-index: 999;
 }
 
 .image-container img {
-    width: 100%; /* Adjust the width of the image */
-    height: auto; /* Maintain aspect ratio */
+    width: 100%;
+    height: auto;
 }
