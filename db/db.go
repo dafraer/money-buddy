@@ -25,9 +25,14 @@ func (u *User) UpdateUserData() {
 	database.Exec(fmt.Sprintf("UPDATE piggy_bank SET balance = %v, target_amount = %v, target_date = '%s' WHERE user_id = %d", u.PiggyBank.Balance, u.PiggyBank.TargetAmount, u.PiggyBank.TargetDate, u.UserId))
 }
 
+// Dec adds expense transaction
+func (u *User) Dec(t Transaction) {
+	t.Amount *= -1
+	u.Add(&t)
+}
+
 // Add method adds transactions to the account
-// Variable c has to be 1 when money is recieved and -1 when money is lost
-func (u *User) Add(t *Transaction, c float64) {
+func (u *User) Add(t *Transaction) {
 
 	//Opening database
 	database, err := sql.Open("sqlite3", "./users.db")
@@ -35,9 +40,6 @@ func (u *User) Add(t *Transaction, c float64) {
 	if err != nil {
 		log.Println(err.Error())
 	}
-
-	//Adjusting transaction amount depending on it being income or expenditure
-	t.Amount *= c
 
 	//Adding transaction to the main balance
 	u.Balance += t.Amount
@@ -48,7 +50,7 @@ func (u *User) Add(t *Transaction, c float64) {
 	temp[0] = *t
 	u.Transactions = append(temp, u.Transactions...)
 	database.Exec(fmt.Sprintf("INSERT INTO transactions (user_id, transaction_time, amount, category) VALUES('%d', '%s', %v, '%s')", u.UserId, t.TransactionTime.Format(time.DateTime), t.Amount, t.Category))
-	u.Analytics = GetAnalyticsData(u.Username)
+	u.Analytics = getAnalyticsData(u.Username)
 }
 
 // CreateNewUser adds new user to the database
@@ -69,13 +71,13 @@ func CreateNewUser(username string, password string) {
 	if err != nil {
 		log.Println(err.Error())
 	}
-	var user_id int
+	var userId int
 	for rows.Next() {
-		rows.Scan(&user_id)
+		rows.Scan(&userId)
 	}
 
 	//Creating new PiggyBank in piggy_bank table
-	database.Exec(fmt.Sprintf("INSERT INTO piggy_bank (user_id) VALUES(%d)", user_id))
+	database.Exec(fmt.Sprintf("INSERT INTO piggy_bank (user_id) VALUES(%d)", userId))
 }
 
 // Exists checks if user exists in the database
@@ -171,22 +173,23 @@ func GetUserData(username string) User {
 	//Getting transactions from database
 	rows, err = database.Query(fmt.Sprintf("SELECT transaction_id, transaction_time, amount, category FROM transactions WHERE user_id = %d ORDER BY transaction_time DESC", u.UserId))
 	u.Transactions = make([]Transaction, 0)
-	var transaction_id int
-	var transaction_time, category string
+	var transactionId int
+	var transactionTime, category string
 	var amount float64
 	for rows.Next() {
-		rows.Scan(&transaction_id, &transaction_time, &amount, &category)
-		t, err := time.Parse(time.DateTime, transaction_time)
+		rows.Scan(&transactionId, &transactionTime, &amount, &category)
+		t, err := time.Parse(time.DateTime, transactionTime)
 		if err != nil {
 			log.Println(err.Error())
 		}
-		u.Transactions = append(u.Transactions, Transaction{TransactionId: transaction_id, TransactionTime: t, Amount: amount, Category: category})
+		u.Transactions = append(u.Transactions, Transaction{TransactionId: transactionId, TransactionTime: t, Amount: amount, Category: category})
 	}
+	u.Analytics = getAnalyticsData(u.Username)
 	return u
 }
 
 // GetAnalyticsData returns analysed user data
-func GetAnalyticsData(username string) Analytics {
+func getAnalyticsData(username string) Analytics {
 
 	//Initializing analytics variable
 	var a Analytics

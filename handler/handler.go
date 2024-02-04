@@ -127,7 +127,6 @@ func loginAuthHandler(w http.ResponseWriter, r *http.Request) {
 
 		//Opening current user data
 		current = db.GetUserData(username)
-		current.Analytics = db.GetAnalyticsData(username)
 
 		//Creating login session
 		session, err := store.Get(r, "session")
@@ -136,11 +135,7 @@ func loginAuthHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		session.Values["username"] = username
 		session.Save(r, w)
-		tmpl, err := template.ParseFiles("templates/homepageacc.html")
-		if err != nil {
-			log.Println(err.Error())
-		}
-		tmpl.Execute(w, current)
+		http.Redirect(w, r, "/main", http.StatusSeeOther)
 	} else {
 		//Else notify user that data is not valid
 		tmpl, err := template.ParseFiles("templates/login.html")
@@ -330,7 +325,7 @@ func updatePiggyBankHandler(w http.ResponseWriter, r *http.Request) {
 		t.TransactionTime = time.Now()
 		t.Amount = p.Balance
 		t.Category = "Savings"
-		current.Add(&t, -1)
+		current.Dec(t)
 	}
 
 	//Updating PiggyBank balance
@@ -338,7 +333,6 @@ func updatePiggyBankHandler(w http.ResponseWriter, r *http.Request) {
 	current.PiggyBank = p
 
 	//Save recieved data
-	current.Analytics = db.GetAnalyticsData(current.Username)
 	current.UpdateUserData()
 }
 
@@ -351,7 +345,7 @@ func addTransactionHandler(w http.ResponseWriter, r *http.Request) {
 	err := decoder.Decode(&t)
 
 	//Add the transaction
-	current.Add(&t, 1)
+	current.Add(&t)
 	current.UpdateUserData()
 	if err != nil {
 		log.Println(err.Error())
