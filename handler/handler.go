@@ -17,15 +17,11 @@ import (
 )
 
 var store *sessions.CookieStore
-var current db.User
 
 func HandleRequest() {
 
 	//Creating new cookies session
 	store = sessions.NewCookieStore([]byte("super-secret"))
-
-	//Initializing new user
-	current = db.User{}
 
 	//Loading all the pages
 	http.HandleFunc("/images/", imageHandler)
@@ -83,7 +79,7 @@ func headerFooterHandler(w http.ResponseWriter, r *http.Request) {
 func homePageHandler(w http.ResponseWriter, r *http.Request) {
 	//Checking if user is logged in
 	session, _ := store.Get(r, "session")
-	_, ok := session.Values["username"]
+	username, ok := session.Values["username"]
 
 	//If user is not logged in execute regular home page
 	if !ok {
@@ -100,6 +96,7 @@ func homePageHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err.Error())
 	}
+	current := db.GetUserData(username.(string))
 	tmpl.Execute(w, current)
 }
 
@@ -124,10 +121,6 @@ func loginAuthHandler(w http.ResponseWriter, r *http.Request) {
 	correct := db.Authentication(username, password)
 	//if data is valid proceed
 	if correct == true {
-
-		//Opening current user data
-		current = db.GetUserData(username)
-
 		//Creating login session
 		session, err := store.Get(r, "session")
 		if err != nil {
@@ -297,43 +290,54 @@ func expenseAnalyticsHandler(w http.ResponseWriter, r *http.Request) {
 
 // getUserDataHandler handles an HTTP request and returns User data encoded in json
 func getUserDataHandler(w http.ResponseWriter, r *http.Request) {
+	session, _ := store.Get(r, "session")
+	username, ok := session.Values["username"]
+	if ok {
+		current := db.GetUserData(username.(string))
 
-	//Encode current user in json
-	jsonData, err := json.Marshal(current)
-	if err != nil {
-		log.Println(err.Error())
+		//Encode current user in json
+		jsonData, err := json.Marshal(current)
+		if err != nil {
+			log.Println(err.Error())
+		}
+
+		//return json encoded user data
+		w.Write(jsonData)
 	}
-
-	//return json encoded user data
-	w.Write(jsonData)
+	return
 }
 
 // updatePiggyBankHandler handles an HTTP request to update data in the PiggyBank
 func updatePiggyBankHandler(w http.ResponseWriter, r *http.Request) {
-
 	//Unmarshall new PiggyBank data into a json
 	decoder := json.NewDecoder(r.Body)
 	p := db.PiggyBank{}
-	err := decoder.Decode(&p)
-	if err != nil {
+	if err := decoder.Decode(&p); err != nil {
 		log.Println(err.Error())
 	}
 
-	//Adding PiggyBank transaction
-	if p.Balance > 0 {
-		var t db.Transaction
-		t.TransactionTime = time.Now()
-		t.Amount = p.Balance
-		t.Category = "Savings"
-		current.Dec(t)
+	//Check if the user is logged in
+	session, _ := store.Get(r, "session")
+	username, ok := session.Values["username"]
+	if ok {
+		current := db.GetUserData(username.(string))
+		//Adding PiggyBank transaction
+		if p.Balance > 0 {
+			var t db.Transaction
+			t.TransactionTime = time.Now().UTC()
+			t.Amount = p.Balance
+			t.Category = "Savings"
+			current.Dec(t)
+		}
+
+		//Updating PiggyBank balance
+		p.Balance += current.PiggyBank.Balance
+		current.PiggyBank = p
+
+		//Save recieved data
+		current.UpdateUserData()
 	}
-
-	//Updating PiggyBank balance
-	p.Balance += current.PiggyBank.Balance
-	current.PiggyBank = p
-
-	//Save recieved data
-	current.UpdateUserData()
+	return
 }
 
 // addTransactionHandler handles HTTP request to add new transaction
@@ -344,22 +348,26 @@ func addTransactionHandler(w http.ResponseWriter, r *http.Request) {
 	t := db.Transaction{}
 	err := decoder.Decode(&t)
 
-	//Add the transaction
-	current.Add(&t)
-	current.UpdateUserData()
-	if err != nil {
-		log.Println(err.Error())
+	//Check if the user is logged in
+	session, _ := store.Get(r, "session")
+	username, ok := session.Values["username"]
+
+	if ok {
+		//Add the transaction
+		current := db.GetUserData(username.(string))
+		current.Add(&t)
+		current.UpdateUserData()
+		if err != nil {
+			log.Println(err.Error())
+		}
 	}
+	return
 }
 
 // logoutHandler logs out user by ending cookie session
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
-
-	//Saving user data
-	current.UpdateUserData()
-	session, _ := store.Get(r, "session")
-
 	//Deleting session
+	session, _ := store.Get(r, "session")
 	delete(session.Values, "username")
 	session.Save(r, w)
 	tmpl, err := template.ParseFiles("templates/logout.html")

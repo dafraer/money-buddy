@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     Amount: amount * value,
                     Category: category
                 };
-
+                location.reload();
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', 'http://localhost:8000/addtransaction', true);
                 xhr.setRequestHeader('Content-Type', 'application/json');
