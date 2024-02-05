@@ -11,6 +11,7 @@ import (
 	"time"
 	"unicode"
 
+	"github.com/google/uuid"
 	"github.com/gorilla/context"
 	"github.com/gorilla/sessions"
 	"golang.org/x/crypto/bcrypt"
@@ -126,7 +127,9 @@ func loginAuthHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println(err.Error())
 		}
-		session.Values["username"] = username
+		token := uuid.New()
+		session_id := token.String()
+		session.Values["username"] = session_id
 		session.Save(r, w)
 		http.Redirect(w, r, "/main", http.StatusSeeOther)
 	} else {
