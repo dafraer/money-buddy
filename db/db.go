@@ -188,6 +188,53 @@ func GetUserData(username string) User {
 	return u
 }
 
+// GetUsername Returns username for token
+func GetUsername(sessionId string) string {
+	//Opening the database
+	database, err := sql.Open("sqlite3", "./users.db")
+	defer database.Close()
+	if err != nil {
+		log.Println(err.Error())
+	}
+
+	//Getting username
+	rows, err := database.Query(fmt.Sprintf("SELECT username FROM sessions WHERE token = '%s'", sessionId))
+	if err != nil {
+		log.Println(err.Error())
+	}
+	var username string
+	for rows.Next() {
+		rows.Scan(&username)
+	}
+	return username
+}
+
+// AddToken Adds new token
+func AddToken(sessionId, username string) {
+	//Opening the database
+	database, err := sql.Open("sqlite3", "./users.db")
+	defer database.Close()
+	if err != nil {
+		log.Println(err.Error())
+	}
+
+	//Adding the token
+	database.Exec(fmt.Sprintf("INSERT INTO sessions(username, token) VALUES('%s', '%s')", username, sessionId))
+}
+
+// Deletes expired token
+func DeleteToken(sessionId string) {
+	//Opening the database
+	database, err := sql.Open("sqlite3", "./users.db")
+	defer database.Close()
+	if err != nil {
+		log.Println(err.Error())
+	}
+
+	//Deleting the token
+	database.Exec(fmt.Sprintf("DELETE FROM sessions WHERE token = '%s'", sessionId))
+}
+
 // GetAnalyticsData returns analysed user data
 func getAnalyticsData(username string) Analytics {
 

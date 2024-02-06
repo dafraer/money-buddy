@@ -11,6 +11,7 @@ import (
 	"time"
 	"unicode"
 
+	"github.com/google/uuid"
 	"github.com/gorilla/context"
 	"github.com/gorilla/sessions"
 	"golang.org/x/crypto/bcrypt"
@@ -79,7 +80,7 @@ func headerFooterHandler(w http.ResponseWriter, r *http.Request) {
 func homePageHandler(w http.ResponseWriter, r *http.Request) {
 	//Checking if user is logged in
 	session, _ := store.Get(r, "session")
-	username, ok := session.Values["username"]
+	sessionId, ok := session.Values["sessionId"]
 
 	//If user is not logged in execute regular home page
 	if !ok {
@@ -92,11 +93,12 @@ func homePageHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Else execute template with user account details
+	username := db.GetUsername(sessionId.(string))
 	tmpl, err := template.ParseFiles("templates/homepageacc.html")
 	if err != nil {
 		log.Println(err.Error())
 	}
-	current := db.GetUserData(username.(string))
+	current := db.GetUserData(username)
 	tmpl.Execute(w, current)
 }
 
@@ -126,7 +128,10 @@ func loginAuthHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println(err.Error())
 		}
-		session.Values["username"] = username
+		token := uuid.New()
+		sessionId := token.String()
+		session.Values["sessionId"] = sessionId
+		db.AddToken(sessionId, username)
 		session.Save(r, w)
 		http.Redirect(w, r, "/main", http.StatusSeeOther)
 	} else {
@@ -226,7 +231,7 @@ func financialGoalsHandler(w http.ResponseWriter, r *http.Request) {
 	//Checking if user is logged in
 	session, _ := store.Get(r, "session")
 	//If user is not logged in execute template that tells them to log in
-	_, ok := session.Values["username"]
+	_, ok := session.Values["sessionId"]
 	if !ok {
 		tmpl, err := template.ParseFiles("templates/goals.html")
 		if err != nil {
@@ -248,7 +253,7 @@ func financialGoalsHandler(w http.ResponseWriter, r *http.Request) {
 func expenseTrackingHandler(w http.ResponseWriter, r *http.Request) {
 	//Check if user is logged in
 	session, _ := store.Get(r, "session")
-	username, ok := session.Values["username"]
+	sessionId, ok := session.Values["sessionId"]
 	//If user is not logged in execute template that tells them to log in
 	if !ok {
 		tmpl, err := template.ParseFiles("templates/expenses.html")
@@ -259,6 +264,7 @@ func expenseTrackingHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//Else execute template with users transactions
+	username := db.GetUsername(sessionId.(string))
 	tmpl, err := template.ParseFiles("templates/expensesacc.html")
 	if err != nil {
 		log.Println(err.Error())
@@ -270,7 +276,7 @@ func expenseTrackingHandler(w http.ResponseWriter, r *http.Request) {
 func expenseAnalyticsHandler(w http.ResponseWriter, r *http.Request) {
 	//Check if user is logged in
 	session, _ := store.Get(r, "session")
-	_, ok := session.Values["username"]
+	_, ok := session.Values["sessionId"]
 	//If user is not logged in execute template that tells them to log in
 	if !ok {
 		tmpl, err := template.ParseFiles("templates/analytics.html")
@@ -291,9 +297,10 @@ func expenseAnalyticsHandler(w http.ResponseWriter, r *http.Request) {
 // getUserDataHandler handles an HTTP request and returns User data encoded in json
 func getUserDataHandler(w http.ResponseWriter, r *http.Request) {
 	session, _ := store.Get(r, "session")
-	username, ok := session.Values["username"]
+	sessionId, ok := session.Values["sessionId"]
 	if ok {
-		current := db.GetUserData(username.(string))
+		username := db.GetUsername(sessionId.(string))
+		current := db.GetUserData(username)
 
 		//Encode current user in json
 		jsonData, err := json.Marshal(current)
@@ -318,9 +325,10 @@ func updatePiggyBankHandler(w http.ResponseWriter, r *http.Request) {
 
 	//Check if the user is logged in
 	session, _ := store.Get(r, "session")
-	username, ok := session.Values["username"]
+	sessionId, ok := session.Values["sessionId"]
 	if ok {
-		current := db.GetUserData(username.(string))
+		username := db.GetUsername(sessionId.(string))
+		current := db.GetUserData(username)
 		//Adding PiggyBank transaction
 		if p.Balance > 0 {
 			var t db.Transaction
@@ -350,11 +358,12 @@ func addTransactionHandler(w http.ResponseWriter, r *http.Request) {
 
 	//Check if the user is logged in
 	session, _ := store.Get(r, "session")
-	username, ok := session.Values["username"]
+	sessionId, ok := session.Values["sessionId"]
 
 	if ok {
 		//Add the transaction
-		current := db.GetUserData(username.(string))
+		username := db.GetUsername(sessionId.(string))
+		current := db.GetUserData(username)
 		current.Add(&t)
 		current.UpdateUserData()
 		if err != nil {
@@ -368,7 +377,11 @@ func addTransactionHandler(w http.ResponseWriter, r *http.Request) {
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
 	//Deleting session
 	session, _ := store.Get(r, "session")
-	delete(session.Values, "username")
+	sessionId, ok := session.Values["sessionId"]
+	if ok {
+		db.DeleteToken(sessionId.(string))
+	}
+	delete(session.Values, "sessionId")
 	session.Save(r, w)
 	tmpl, err := template.ParseFiles("templates/logout.html")
 	if err != nil {
