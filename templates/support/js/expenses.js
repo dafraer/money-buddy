@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // ajax request func
         function Get(callback) {
             var xhr = new XMLHttpRequest();
-            xhr.open('GET', 'http://money-buddy.online/getuserdata', true);
+            xhr.open('GET', 'http://localhost:8000/getuserdata', true);
             xhr.onload = function () {
                 if (this.status == 200) {
                     var u = JSON.parse(this.responseText);
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 };
                 location.reload();
                 var xhr = new XMLHttpRequest();
-                xhr.open('POST', 'http://money-buddy.online/addtransaction', true);
+                xhr.open('POST', 'http://localhost:8000/addtransaction', true);
                 xhr.setRequestHeader('Content-Type', 'application/json');
                 xhr.send(JSON.stringify(transaction));
                 Get()
