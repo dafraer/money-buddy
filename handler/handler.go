@@ -43,7 +43,7 @@ func HandleRequest() {
 	http.HandleFunc("/postpiggybank", updatePiggyBankHandler)
 	http.HandleFunc("/addtransaction", addTransactionHandler)
 	port := os.Getenv("PORT")
-	http.ListenAndServe(port, context.ClearHandler(http.DefaultServeMux))
+	http.ListenAndServe("0.0.0.0:"+port, context.ClearHandler(http.DefaultServeMux))
 }
 
 // imageHandler serves images
