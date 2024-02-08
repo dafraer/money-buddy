@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ajax request function
     xhr = new XMLHttpRequest();
-    xhr.open('GET', 'http://localhost:8000/getuserdata', true);
+    xhr.open('GET', 'moneybuddy-production.up.railway.app/getuserdata', true);
     xhr.onload = function () {
         if (this.status == 200) {
             var u = JSON.parse(this.responseText);
