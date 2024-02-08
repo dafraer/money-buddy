@@ -396,6 +396,7 @@ func getUserDataHandler(w http.ResponseWriter, r *http.Request) {
 
 		//log request
 		log.Println(fmt.Sprintf("User %s requested account data", current.Username))
+		return
 	}
 	//log request
 	log.Println("Unauthorised user tried to request data")
@@ -447,6 +448,7 @@ func updatePiggyBankHandler(w http.ResponseWriter, r *http.Request) {
 
 		//log request
 		log.Println(fmt.Sprintf("User %s updated PiggyBank. Piggybank: %v", current.Username, p))
+		return
 	}
 	//log request
 	log.Println("Unauthorised user tried to update PigyBank")
@@ -492,6 +494,7 @@ func addTransactionHandler(w http.ResponseWriter, r *http.Request) {
 
 		//log request
 		log.Println(fmt.Sprintf("User %s added transaction. Amount: %v, Category: %s", current.Username, t.Amount, t.Category))
+		return
 	}
 	//log request
 	log.Println("Unauthorised user tried to add transaction")
