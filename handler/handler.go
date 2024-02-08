@@ -143,6 +143,8 @@ func loginAuthHandler(w http.ResponseWriter, r *http.Request) {
 		db.AddToken(sessionId, username)
 		session.Save(r, w)
 		http.Redirect(w, r, "/main", http.StatusSeeOther)
+
+		log.Println(fmt.Sprintf("User %s logged in", username))
 	} else {
 		//Else notify user that data is not valid
 		tmpl, err := template.ParseFiles("templates/login.html")
@@ -232,6 +234,8 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println(err.Error())
 	}
 	tmpl.Execute(w, nil)
+
+	log.Println(fmt.Sprintf("Created New User: %s", username))
 }
 
 // FinancialGoalsHandler handles PiggyBank page
@@ -279,6 +283,7 @@ func expenseTrackingHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println(err.Error())
 	}
 	tmpl.Execute(w, username)
+
 }
 
 // expenseAnalyticsHandler handles expense analytics page
@@ -319,7 +324,12 @@ func getUserDataHandler(w http.ResponseWriter, r *http.Request) {
 
 		//return json encoded user data
 		w.Write(jsonData)
+
+		//log request
+		log.Println(fmt.Sprintf("User %s requested account data", current.Username))
 	}
+	//log request
+	log.Println("Unauthorised user tried to request data")
 	return
 }
 
@@ -353,13 +363,17 @@ func updatePiggyBankHandler(w http.ResponseWriter, r *http.Request) {
 
 		//Save recieved data
 		current.UpdateUserData()
+
+		//log request
+		log.Println(fmt.Sprintf("User %s updated PiggyBank. Piggybank: %v", current.Username, p))
 	}
+	//log request
+	log.Println("Unauthorised user tried to update PigyBank")
 	return
 }
 
 // addTransactionHandler handles HTTP request to add new transaction
 func addTransactionHandler(w http.ResponseWriter, r *http.Request) {
-
 	//Unmarshall transaction data from json file
 	decoder := json.NewDecoder(r.Body)
 	t := db.Transaction{}
@@ -378,7 +392,12 @@ func addTransactionHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println(err.Error())
 		}
+
+		//log request
+		log.Println(fmt.Sprintf("User %s added transaction. Amount: %v, Category: %s", current.Username, t.Amount, t.Category))
 	}
+	//log request
+	log.Println("Unauthorised user tried to add transaction")
 	return
 }
 
