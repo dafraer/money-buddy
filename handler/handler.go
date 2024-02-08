@@ -96,18 +96,32 @@ func homePageHandler(w http.ResponseWriter, r *http.Request) {
 		tmpl, err := template.ParseFiles("templates/homepage.html")
 		if err != nil {
 			log.Println(err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
+			return
 		}
 		tmpl.Execute(w, nil)
 		return
 	}
 
 	//Else execute template with user account details
-	username := db.GetUsername(sessionId.(string))
+	username, err := db.GetUsername(sessionId.(string))
+	if err != nil {
+		log.Println(err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	tmpl, err := template.ParseFiles("templates/homepageacc.html")
 	if err != nil {
 		log.Println(err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
-	current := db.GetUserData(username)
+	current, err := db.GetUserData(username)
+	if err != nil {
+		log.Println(err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	tmpl.Execute(w, current)
 }
 
@@ -116,6 +130,8 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("templates/login.html")
 	if err != nil {
 		log.Println(err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 	tmpl.Execute(w, nil)
 }
@@ -129,13 +145,20 @@ func loginAuthHandler(w http.ResponseWriter, r *http.Request) {
 	password := r.FormValue("password")
 
 	//Check the validity of username and password
-	correct := db.Authentication(username, password)
+	correct, err := db.Authentication(username, password)
+	if err != nil {
+		log.Println(err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	//if data is valid proceed
 	if correct == true {
 		//Creating login session
 		session, err := store.Get(r, "session")
 		if err != nil {
 			log.Println(err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
+			return
 		}
 		token := uuid.New()
 		sessionId := token.String()
@@ -150,6 +173,8 @@ func loginAuthHandler(w http.ResponseWriter, r *http.Request) {
 		tmpl, err := template.ParseFiles("templates/login.html")
 		if err != nil {
 			log.Println(err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
+			return
 		}
 		tmpl.Execute(w, "Incorrect username or password. Please try again.")
 	}
@@ -160,6 +185,8 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("templates/registration.html")
 	if err != nil {
 		log.Println(err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 	tmpl.Execute(w, nil)
 }
@@ -199,17 +226,26 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 		tmpl, err := template.ParseFiles("templates/registration.html")
 		if err != nil {
 			log.Println(err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
+			return
 		}
 		tmpl.Execute(w, "Password or username does not meet the requirements.")
 		return
 	}
 
 	//Checking if user already exists
-	exists := db.Exists(username)
+	exists, err := db.Exists(username)
+	if err != nil {
+		log.Println(err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	if exists {
 		tmpl, err := template.ParseFiles("templates/registration.html")
 		if err != nil {
 			log.Println(err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
+			return
 		}
 		tmpl.Execute(w, "Account already exists")
 		return
@@ -222,6 +258,8 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 		tmpl, err := template.ParseFiles("templates/registration.html")
 		if err != nil {
 			log.Println(err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
+			return
 		}
 		tmpl.Execute(w, "There was a problem registering new user")
 		return
@@ -232,6 +270,8 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("templates/registrationsuccess.html")
 	if err != nil {
 		log.Println(err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 	tmpl.Execute(w, nil)
 
@@ -249,6 +289,8 @@ func financialGoalsHandler(w http.ResponseWriter, r *http.Request) {
 		tmpl, err := template.ParseFiles("templates/goals.html")
 		if err != nil {
 			log.Println(err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
+			return
 		}
 		tmpl.Execute(w, nil)
 		return
@@ -258,6 +300,8 @@ func financialGoalsHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("templates/goalsacc.html")
 	if err != nil {
 		log.Println(err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 	tmpl.Execute(w, nil)
 }
@@ -272,15 +316,24 @@ func expenseTrackingHandler(w http.ResponseWriter, r *http.Request) {
 		tmpl, err := template.ParseFiles("templates/expenses.html")
 		if err != nil {
 			log.Println(err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
+			return
 		}
 		tmpl.Execute(w, nil)
 		return
 	}
 	//Else execute template with users transactions
-	username := db.GetUsername(sessionId.(string))
+	username, err := db.GetUsername(sessionId.(string))
+	if err != nil {
+		log.Println(err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	tmpl, err := template.ParseFiles("templates/expensesacc.html")
 	if err != nil {
 		log.Println(err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 	tmpl.Execute(w, username)
 
@@ -296,6 +349,8 @@ func expenseAnalyticsHandler(w http.ResponseWriter, r *http.Request) {
 		tmpl, err := template.ParseFiles("templates/analytics.html")
 		if err != nil {
 			log.Println(err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
+			return
 		}
 		tmpl.Execute(w, nil)
 		return
@@ -304,6 +359,8 @@ func expenseAnalyticsHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("templates/analyticsacc.html")
 	if err != nil {
 		log.Println(err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 	tmpl.Execute(w, nil)
 }
@@ -313,13 +370,25 @@ func getUserDataHandler(w http.ResponseWriter, r *http.Request) {
 	session, _ := store.Get(r, "session")
 	sessionId, ok := session.Values["sessionId"]
 	if ok {
-		username := db.GetUsername(sessionId.(string))
-		current := db.GetUserData(username)
+		username, err := db.GetUsername(sessionId.(string))
+		if err != nil {
+			log.Println(err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		current, err := db.GetUserData(username)
+		if err != nil {
+			log.Println(err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
 
 		//Encode current user in json
 		jsonData, err := json.Marshal(current)
 		if err != nil {
 			log.Println(err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
+			return
 		}
 
 		//return json encoded user data
@@ -340,14 +409,26 @@ func updatePiggyBankHandler(w http.ResponseWriter, r *http.Request) {
 	p := db.PiggyBank{}
 	if err := decoder.Decode(&p); err != nil {
 		log.Println(err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 
 	//Check if the user is logged in
 	session, _ := store.Get(r, "session")
 	sessionId, ok := session.Values["sessionId"]
 	if ok {
-		username := db.GetUsername(sessionId.(string))
-		current := db.GetUserData(username)
+		username, err := db.GetUsername(sessionId.(string))
+		if err != nil {
+			log.Println(err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		current, err := db.GetUserData(username)
+		if err != nil {
+			log.Println(err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
 		//Adding PiggyBank transaction
 		if p.Balance > 0 {
 			var t db.Transaction
@@ -378,19 +459,35 @@ func addTransactionHandler(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	t := db.Transaction{}
 	err := decoder.Decode(&t)
-
+	if err != nil {
+		log.Println(err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	//Check if the user is logged in
 	session, _ := store.Get(r, "session")
 	sessionId, ok := session.Values["sessionId"]
 
 	if ok {
 		//Add the transaction
-		username := db.GetUsername(sessionId.(string))
-		current := db.GetUserData(username)
+		username, err := db.GetUsername(sessionId.(string))
+		if err != nil {
+			log.Println(err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		current, err := db.GetUserData(username)
+		if err != nil {
+			log.Println(err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
 		current.Add(&t)
 		current.UpdateUserData()
 		if err != nil {
 			log.Println(err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
+			return
 		}
 
 		//log request
@@ -414,6 +511,8 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("templates/logout.html")
 	if err != nil {
 		log.Println(err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 	tmpl.Execute(w, nil)
 }
