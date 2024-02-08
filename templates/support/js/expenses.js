@@ -59,12 +59,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     Amount: amount * value,
                     Category: category
                 };
-                location.reload();
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', 'https://moneybuddy-production.up.railway.app/addtransaction', true);
                 xhr.setRequestHeader('Content-Type', 'application/json');
                 xhr.send(JSON.stringify(transaction));
-                Get()
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
         }
 
         function getCurrentTime() {

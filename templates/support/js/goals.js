@@ -123,14 +123,12 @@ document.addEventListener('DOMContentLoaded', function () {
             Balance: amount
         };
 
-        location.reload();
-
         var xhr = new XMLHttpRequest();
         xhr.open('POST', 'https://moneybuddy-production.up.railway.app/postpiggybank', true);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send(JSON.stringify(PiggyBank));
         xhr.onload = function() {
-            Get();
+            location.reload();
             // Clear input fields after form submission
             document.getElementById("amount").value = "";
             document.getElementById("newAmount").value = "";
