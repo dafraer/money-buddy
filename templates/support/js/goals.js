@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // ajax request func
     function Get() {
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'http://localhost:8000/getuserdata', true);
+        xhr.open('GET', 'https://moneybuddy-production.up.railway.app/getuserdata', true);
         xhr.onload = function () {
             if (this.status == 200) {
                 var u = JSON.parse(this.responseText);
@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function () {
         location.reload();
 
         var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'http://localhost:8000/postpiggybank', true);
+        xhr.open('POST', 'https://moneybuddy-production.up.railway.app/postpiggybank', true);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send(JSON.stringify(PiggyBank));
         xhr.onload = function() {
