@@ -7,6 +7,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 	"path"
 	"time"
 	"unicode"
@@ -41,7 +42,15 @@ func HandleRequest() {
 	http.HandleFunc("/logout", logoutHandler)
 	http.HandleFunc("/postpiggybank", updatePiggyBankHandler)
 	http.HandleFunc("/addtransaction", addTransactionHandler)
-	http.ListenAndServe(":8000", context.ClearHandler(http.DefaultServeMux))
+
+	//Get port from the environment if possible
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8000"
+	}
+	port = ":" + port
+	http.ListenAndServe(port, context.ClearHandler(http.DefaultServeMux))
+
 }
 
 // imageHandler serves images
