@@ -78,3 +78,46 @@ body {
     width: 100%;
     height: auto;
 }
+
+@media only screen and (max-width: 768px) {
+
+ .title-container {
+    font-size: 3em;
+    text-align: center;
+    margin-left: 0;
+    margin-top: 5vh;
+ }
+ 
+ .description-container {
+    font-size: 1.3em;
+ }
+
+ .buttons-container {
+    font-size: 1.3em;
+    margin-top: 4vh;
+    text-align: center;
+    width: 80%;
+ }
+
+ .button-group {
+    margin-top: 1vh;
+ }
+
+ #signinbtn, #signupbtn {
+    font-size: 5vw;
+    padding: 2.5% 4.125%;
+    min-width: 25vw;
+    border-radius: 3.25vw;
+}
+
+.image-container {
+    bottom: 2vh;
+    left: 70vw;
+}
+
+.image-container img {
+    width: 100%;
+    height: auto;
+}
+
+}
