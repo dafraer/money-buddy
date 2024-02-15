@@ -75,6 +75,23 @@
   position: relative;
 }
 
+input[type="number"],
+input[type="text"] {
+    width: 8em;
+    padding: 0.5em 0.8em;
+    border: 1px solid #ccc;
+    border-radius: 0.3em;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+input[type="number"]:focus,
+input[type="text"]:focus {
+    border-color: #007bff;
+}
+
+
 .close {
   color: red;
   float: right;
@@ -93,7 +110,6 @@
 }
 
 /* transactions table */
-
 .transactions-container {
   margin-top: 1.5vw;
   display: flex;
@@ -123,4 +139,59 @@
 
 #transact tr:hover {
   background-color: #ddd;
+}
+
+@media only screen and (max-width: 768px) {
+  #trackbtn {
+    font-size: 3vw;
+    padding: 1.5% 2.5%;
+    min-width: 15vw;
+    border-radius: 2vw;
+} 
+
+#open_plusModal {
+  font-size: 5.3em;
+  width: 13.3vw;
+  height: 13.3vw;
+  border: 0.53vw solid #43766C;
+  margin-right: 5vw;
+}
+
+#open_minModal {
+  font-size: 5.3em;
+  width: 13.3vw;
+  height: 13.3vw;
+  border: 0.53vw solid #BF3131;
+  margin-left: 5vw;
+}
+
+.modal-content {
+    margin-top: 30%;
+    font-size: 3vw;
+    width: 90%; /* Adjust as needed */
+    max-width: 80%; /* Adjust as needed */
+  }
+
+input[type="number"],
+input[type="text"] {
+    width: 4em;
+    padding: 0.1em 0.4em;
+    border: 1px solid #ccc;
+    border-radius: 0.3em;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.close {
+  font-size: 4vw;
+}
+
+.transactions-container {
+  font-size: 3vw;
+}
+
+#transact {
+  width: 80%;
+}
 }

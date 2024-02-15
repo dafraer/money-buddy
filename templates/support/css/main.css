@@ -193,15 +193,16 @@
     }
 
     #title {
-        font-size: 4vw;
-        padding: 1vw;
+        font-size: 5vw;
+        padding: 2vw;
+        padding-bottom: 0;
     }
 
     footer {
-        font-size: 3vw; /* Increase font size to increase footer size */
+        font-size: 3vw;
         background-color: #fff;
         color: #310B0B;
-        padding: 5%; /* Increase padding to increase footer size */
+        padding: 5%;
         text-align: center;
         position: relative;
     }
