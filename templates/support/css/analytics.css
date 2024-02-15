@@ -54,7 +54,6 @@ text-align:end;
         #bfcea9 var(--top1CSS) var(--top2CSS),
         #89B9AD var(--top2CSS) var(--top3CSS)
         );
-    
 }
 
 #legend {
@@ -71,3 +70,36 @@ text-align:end;
 #name1 {color: #fcc983;font-weight: bold;}
 #name2 {color: #bfcea9;font-weight: bold;}
 #name3 {color: #89B9AD;font-weight: bold;}
+
+@media only screen and (max-width: 768px) {
+
+    main p, main b, main i, main h3{
+        font-size: 2.5vw;
+    }
+    
+    #analyticsbtn {
+        font-size: 3vw;
+        padding: 1.5% 2.5%;
+        min-width: 15vw;
+        border-radius: 2vw;
+    } 
+
+    .stats {
+        width: 21vw;
+        margin-top: -7vw;
+        
+    }
+
+    .pie-chart {
+        width: 35vw;
+        height: 35vw;
+        margin-top: 10vw;
+    }
+
+    #legend {
+        margin-top: -1.3vw;
+        top: 30%;
+        right: 15%;
+        width: 21vw;
+    }
+}
