@@ -150,3 +150,36 @@
             #fcc983 88% 100%
         );
     }
+
+    @media only screen and (max-width: 768px) {
+
+        .grid-container {
+            grid-template-columns: repeat(2, 40vw);
+            grid-template-rows: repeat(2, 40vw);
+            gap: 4vw;
+        }
+      
+        .grid-item {
+          width: 40vw; /* Adjust the width of grid items */
+          height: 40vw; /* Adjust the height of grid items */
+          font-size: 3vw; /* Adjust font size for better readability */
+        }
+
+        #grid3 #plusbtn { 
+            font-size: 4vw;
+            width: 8vw;
+            height: 8vw;
+            border: 0.5vw solid #43766C;
+            border-radius: 50%;
+            margin-right: 1.3vw;
+        }
+    
+        #grid3 #minbtn {
+            font-size: 4vw;
+            width: 8vw;
+            height: 8vw;
+            border: 0.5vw solid #BF3131;
+            border-radius: 50%;
+            margin-right: 1.3vw;
+          }
+      }
