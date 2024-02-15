@@ -73,7 +73,7 @@ text-align:end;
 
 @media only screen and (max-width: 768px) {
 
-    main p, main b, main i, main h3{
+    main p, main b, main i, main h3, main span{
         font-size: 2.5vw;
     }
     
@@ -86,8 +86,7 @@ text-align:end;
 
     .stats {
         width: 21vw;
-        margin-top: -7vw;
-        
+        margin-top: -7vw;   
     }
 
     .pie-chart {
