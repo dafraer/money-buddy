@@ -7,13 +7,13 @@
 
 .tracker {
   position: absolute;
-  top: 57%;
+  top: 65%;
   left: 13%;
 }
 
 .progress-bar-container {
   position: absolute;
-  top: 60%;
+  top: 70%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
@@ -98,7 +98,7 @@ input[type="text"]:focus {
   }
 
   .tracker {
-    top: 40%;
+    top: 50%;
     left: 25%;
     transform: translate(-50%, -50%);
   }
@@ -133,7 +133,7 @@ input[type="text"]:focus {
   
   #adjust {
     text-align: center;
-    top: 65%;
+    top: 70%;
     right: 50%;
     transform: translate(50%, -50%);
     width: 80%;
