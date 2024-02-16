@@ -9,7 +9,6 @@
   position: absolute;
   top: 57%;
   left: 13%;
-  transform: translate(-50%, -50%);
 }
 
 .progress-bar-container {
@@ -99,7 +98,7 @@ input[type="text"]:focus {
   }
 
   .tracker {
-    top: 90%;
+    top: 40%;
     left: 25%;
     transform: translate(-50%, -50%);
   }
@@ -111,7 +110,7 @@ input[type="text"]:focus {
   .banana-image-container {
     width: 40vw;
     height: 30vw;
-    margin-top: -100vw;
+    margin-top: -70vw;
   }
   
   .banana_image {
@@ -127,14 +126,14 @@ input[type="text"]:focus {
   }
   
   .progress-label {
-    left: 10vw;
+    left: 45vw;
     width: 40vw;
-    margin-top: -60vw;
+    margin-top: -45vw;
   }
   
   #adjust {
     text-align: center;
-    top: 55%;
+    top: 65%;
     right: 50%;
     transform: translate(50%, -50%);
     width: 80%;
