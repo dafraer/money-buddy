@@ -7,13 +7,14 @@
 
 .tracker {
   position: absolute;
-  top: 65%;
+  top: 57%;
   left: 13%;
+  transform: translate(-50%, -50%);
 }
 
 .progress-bar-container {
   position: absolute;
-  top: 70%;
+  top: 60%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
@@ -93,10 +94,6 @@ input[type="text"]:focus {
     font-size: 3vw;
   }
   
-  #adjust p, #adjust b, #adjust i, #adjust h3, #adjust label, #adjust span{
-    font-size: 3.5vw;
-  }
-
   .tracker {
     top: 50%;
     left: 25%;
@@ -104,13 +101,15 @@ input[type="text"]:focus {
   }
   
   .progress-bar-container {
+    top: 60%;
+    left: 50%;
     transform: translate(-50%, -50%);
   }
   
   .banana-image-container {
     width: 40vw;
     height: 30vw;
-    margin-top: -70vw;
+    margin-top: -15vw; /* Adjusted to prevent overlap */
   }
   
   .banana_image {
@@ -126,9 +125,9 @@ input[type="text"]:focus {
   }
   
   .progress-label {
-    left: 45vw;
+    left: 30%; /* Adjusted for better positioning */
     width: 40vw;
-    margin-top: -45vw;
+    margin-top: -20vw; /* Adjusted to prevent overlap */
   }
   
   #adjust {
