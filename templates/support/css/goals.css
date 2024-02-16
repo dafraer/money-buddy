@@ -99,7 +99,7 @@ input[type="text"]:focus {
   }
 
   .tracker {
-    top: 60%;
+    top: 65%;
     left: 25%;
     transform: translate(-50%, -50%);
   }
@@ -111,7 +111,7 @@ input[type="text"]:focus {
   .banana-image-container {
     width: 40vw;
     height: 30vw;
-    margin-top: -75vw;
+    margin-top: -70vw;
   }
   
   .banana_image {
@@ -130,12 +130,12 @@ input[type="text"]:focus {
     transform: translate(-50%, -50%);
     left: 10vw;
     width: 40vw;
-    margin-top: -65vw;
+    margin-top: -60vw;
   }
   
   #adjust {
     text-align: center;
-    top: 60%;
+    top: 55%;
     right: 50%;
     transform: translate(50%, -50%);
     width: 80%;
