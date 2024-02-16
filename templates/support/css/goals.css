@@ -99,7 +99,7 @@ input[type="text"]:focus {
   }
 
   .tracker {
-    top: 65%;
+    top: 90%;
     left: 25%;
     transform: translate(-50%, -50%);
   }
@@ -111,7 +111,7 @@ input[type="text"]:focus {
   .banana-image-container {
     width: 40vw;
     height: 30vw;
-    margin-top: -70vw;
+    margin-top: -100vw;
   }
   
   .banana_image {
@@ -127,7 +127,6 @@ input[type="text"]:focus {
   }
   
   .progress-label {
-    transform: translate(-50%, -50%);
     left: 10vw;
     width: 40vw;
     margin-top: -60vw;
