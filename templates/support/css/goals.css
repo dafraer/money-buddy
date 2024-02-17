@@ -164,8 +164,6 @@ input[type="text"]:focus {
   } 
 
   #includedfooter {
-    position: absolute;
-    padding-top: 5vw;
     width: 100%;
     font-size: 2vw;
   }
