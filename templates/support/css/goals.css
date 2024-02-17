@@ -111,7 +111,7 @@ input[type="text"]:focus {
   .banana-image-container {
     width: 40vw;
     height: 30vw;
-    margin-top: -55vw;
+    margin-top: -45vw;
   }
   
   .banana_image {
@@ -129,12 +129,12 @@ input[type="text"]:focus {
   .progress-label {
     left: 45vw;
     width: 40vw;
-    margin-top: -35vw;
+    margin-top: -25vw;
   }
   
   #adjust {
     text-align: center;
-    top: 66%;
+    top: 60%;
     right: 50%;
     transform: translate(50%, -50%);
     width: 80%;
