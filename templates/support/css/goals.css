@@ -7,14 +7,14 @@
 
 .tracker {
   position: absolute;
-  top: 65%;
+  top: 57%;
   left: 13%;
   transform: translate(-50%, -50%);
 }
 
 .progress-bar-container {
   position: absolute;
-  top: 70%;
+  top: 60%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
@@ -111,7 +111,7 @@ input[type="text"]:focus {
   .banana-image-container {
     width: 40vw;
     height: 30vw;
-    margin-top: -85vw;
+    margin-top: -90vw;
   }
   
   .banana_image {
@@ -129,7 +129,7 @@ input[type="text"]:focus {
   .progress-label {
     left: 45vw;
     width: 40vw;
-    margin-top: -60vw;
+    margin-top: -65vw;
   }
   
   #adjust {
