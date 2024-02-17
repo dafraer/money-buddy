@@ -99,7 +99,7 @@ input[type="text"]:focus {
   }
 
   .tracker {
-    top: 50%;
+    top: 45%;
     left: 25%;
     transform: translate(-50%, -50%);
   }
@@ -134,7 +134,7 @@ input[type="text"]:focus {
   
   #adjust {
     text-align: center;
-    top: 70%;
+    top: 80%;
     right: 50%;
     transform: translate(50%, -50%);
     width: 80%;
