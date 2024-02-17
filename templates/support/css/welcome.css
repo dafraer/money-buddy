@@ -111,7 +111,8 @@ body {
 }
 
 .image-container {
-    bottom: 0vh;
+    position: absolute;
+    bottom: 10vh;
     left: 70vw;
 }
 
